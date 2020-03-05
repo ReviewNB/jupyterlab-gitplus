@@ -1,6 +1,4 @@
-# @reviewnb/gitplus
-
-![Github Actions Status](https://github.com/ReviewNB/jupyterlab-gitplus/workflows/Build/badge.svg)
+# GitPlus
 
 JupyterLab extension to create GitHub pull requests.
 
