@@ -1,5 +1,7 @@
 import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
 //import { Dialog, showDialog } from "@jupyterlab/apputils";
+import { IEditorTracker } from "@jupyterlab/fileeditor";
+import { INotebookTracker } from "@jupyterlab/notebook";
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { Menu } from '@lumino/widgets';
 
@@ -8,7 +10,7 @@ import { Menu } from '@lumino/widgets';
  */
 const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
   activate,
-  requires: [IMainMenu],
+  requires: [IMainMenu, IEditorTracker, INotebookTracker],
   id: '@reviewnb/gitplus',
   autoStart: true
 };
@@ -16,14 +18,17 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
 /**
  * Activate the extension.
  */
-function activate(app: JupyterFrontEnd, mainMenu: IMainMenu) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v6');
+function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
+  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v13');
   // Create new command
   const commandID = 'create-pr';
   app.commands.addCommand(commandID, {
     label: 'Create Pull Request',
     execute: () => {
-      console.log(`Executed ${commandID}`);
+      //const current = tracker.currentWidget;
+      //const path = current.context.path;
+      const files = get_open_files(editorTracker, notebookTracker);
+      console.log(`Open files -- ${files}`);
     }
   });
 
@@ -39,5 +44,17 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu) {
   });
 };
 
+function get_open_files(editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
+  let result: string[] = []
+
+  notebookTracker.forEach(notebook => {
+    result.push(notebook.context.path);
+  });
+  editorTracker.forEach(editor => {
+    result.push(editor.context.path);
+  });
+  return result;
+
+}
 
 export default gitPlusPlugin;
