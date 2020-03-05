@@ -1,4 +1,3 @@
 lib/
 node_modules/
 tsconfig.tsbuildinfo
-yarn.lock
