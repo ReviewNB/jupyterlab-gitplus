@@ -1,9 +1,16 @@
 import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
-//import { Dialog, showDialog } from "@jupyterlab/apputils";
+import { Dialog, showDialog } from "@jupyterlab/apputils";
 import { IEditorTracker } from "@jupyterlab/fileeditor";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IMainMenu } from '@jupyterlab/mainmenu';
-import { Menu } from '@lumino/widgets';
+import { Menu, Widget } from '@lumino/widgets';
+import { PageConfig } from "@jupyterlab/coreutils";
+
+import axios from 'axios';
+
+export const HTTP = axios.create({
+  baseURL: PageConfig.getBaseUrl()
+});
 
 /**
  * The plugin registration information.
@@ -19,16 +26,53 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v13');
+  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v18');
   // Create new command
   const commandID = 'create-pr';
   app.commands.addCommand(commandID, {
     label: 'Create Pull Request',
     execute: () => {
-      //const current = tracker.currentWidget;
-      //const path = current.context.path;
+      const repo_names: string[] = [];
       const files = get_open_files(editorTracker, notebookTracker);
       console.log(`Open files -- ${files}`);
+      const file_list = [];
+      for (const f of files) {
+        var entry = {
+          "path": f
+        }
+        file_list.push(entry);
+      }
+      const data = {
+        "files": file_list
+      }
+
+
+      HTTP.post("gitplus/modified_repo", data)
+        .then(function (response) {
+          let repo_list = response.data;
+          console.log(repo_list);
+          for (const repo of repo_list) {
+            repo_names.push(repo['name'])
+          }
+          const dwidget = new DropDown(repo_names, "Select Repository");
+          showDialog({
+            title: "Repository Selection",
+            body: dwidget,
+            buttons: [
+              Dialog.cancelButton(),
+              Dialog.okButton({ label: "Next" })
+            ]
+          }).then(result => {
+            if (!result.button.accept) {
+              return;
+            }
+          });
+        })
+        .catch(function (error) {
+          console.log(error)
+        });
+
+
     }
   });
 
@@ -58,3 +102,76 @@ function get_open_files(editorTracker: IEditorTracker, notebookTracker: INoteboo
 }
 
 export default gitPlusPlugin;
+
+class DropDown extends Widget {
+  constructor(
+    options: string[] = [],
+    label: string = "") {
+
+    const body = document.createElement("div");
+    const basic = document.createElement("div");
+    body.appendChild(basic);
+    basic.appendChild(Private.buildLabel(label));
+    basic.appendChild(Private.buildSelect(options));
+    super({ node: body });
+  }
+
+  get toNode(): HTMLTextAreaElement {
+    return this.node.getElementsByTagName("textarea")[0] as HTMLTextAreaElement;
+  }
+
+  public getTo(): string {
+    return this.toNode.value;
+  }
+
+}
+
+
+
+namespace Private {
+  const default_none = document.createElement("option");
+  default_none.selected = false;
+  default_none.disabled = true;
+  default_none.hidden = false;
+  default_none.style.display = "none";
+  default_none.value = "";
+
+  export
+    function buildLabel(text: string): HTMLLabelElement {
+    const label = document.createElement("label");
+    label.textContent = text;
+    label.id = 'id123';
+    return label;
+  }
+
+  export
+    function buildTextarea(text: string): HTMLTextAreaElement {
+    const area = document.createElement("textarea");
+    area.placeholder = text;
+    area.style.marginBottom = "15px";
+    return area;
+  }
+
+  export
+    function buildSelect(list: string[], _class = "", def?: string): HTMLSelectElement {
+    const select = document.createElement("select");
+    select.appendChild(default_none);
+    for (const x of list) {
+      const option = document.createElement("option");
+      option.value = x;
+      option.textContent = x;
+      select.appendChild(option);
+
+      if (def && x === def) {
+        option.selected = true;
+      }
+
+      if (_class) {
+        select.classList.add(_class);
+      }
+    }
+    select.style.marginBottom = "15px";
+    select.style.minHeight = "25px";
+    return select;
+  }
+}
