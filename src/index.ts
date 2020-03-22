@@ -4,13 +4,8 @@ import { IEditorTracker } from "@jupyterlab/fileeditor";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { Menu, Widget } from '@lumino/widgets';
-import { PageConfig } from "@jupyterlab/coreutils";
-
-import axios from 'axios';
-
-export const HTTP = axios.create({
-  baseURL: PageConfig.getBaseUrl()
-});
+import { get_json_request_payload_from_file_list } from './utility';
+import { get_modified_repositories } from './api_client';
 
 /**
  * The plugin registration information.
@@ -26,55 +21,36 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v18');
+  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v20');
   // Create new command
   const commandID = 'create-pr';
   app.commands.addCommand(commandID, {
     label: 'Create Pull Request',
     execute: () => {
-      const repo_names: string[] = [];
       const files = get_open_files(editorTracker, notebookTracker);
       console.log(`Open files -- ${files}`);
-      const file_list = [];
-      for (const f of files) {
-        var entry = {
-          "path": f
-        }
-        file_list.push(entry);
-      }
-      const data = {
-        "files": file_list
-      }
-
-
-      HTTP.post("gitplus/modified_repo", data)
-        .then(function (response) {
-          let repo_list = response.data;
-          console.log(repo_list);
-          for (const repo of repo_list) {
-            repo_names.push(repo['name'])
-          }
-          const dwidget = new DropDown(repo_names, "Select Repository");
-          showDialog({
-            title: "Repository Selection",
-            body: dwidget,
-            buttons: [
-              Dialog.cancelButton(),
-              Dialog.okButton({ label: "Next" })
-            ]
-          }).then(result => {
-            if (!result.button.accept) {
-              return;
-            }
-          });
-        })
-        .catch(function (error) {
-          console.log(error)
-        });
-
-
+      const data = get_json_request_payload_from_file_list(files);
+      get_modified_repositories(data, show_repository_selection_dialog);
     }
   });
+
+
+  function show_repository_selection_dialog(repo_names: string[]) {
+    console.log(`repo_names -- ${repo_names}`);
+    const dwidget = new DropDown(repo_names, "Select Repository");
+    showDialog({
+      title: "Repository Selection",
+      body: dwidget,
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.okButton({ label: "Next" })
+      ]
+    }).then(result => {
+      if (!result.button.accept) {
+        return;
+      }
+    });
+  }
 
   // Create new top level menu
   const menu = new Menu({ commands: app.commands });
