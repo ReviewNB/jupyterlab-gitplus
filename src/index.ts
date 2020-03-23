@@ -6,6 +6,7 @@ import { IMainMenu } from '@jupyterlab/mainmenu';
 import { Menu, Widget } from '@lumino/widgets';
 import { get_json_request_payload_from_file_list } from './utility';
 import { get_modified_repositories } from './api_client';
+import { PageConfig } from "@jupyterlab/coreutils";
 
 /**
  * The plugin registration information.
@@ -21,7 +22,7 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v20');
+  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v34');
   // Create new command
   const commandID = 'create-pr';
   app.commands.addCommand(commandID, {
@@ -35,12 +36,41 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   });
 
 
-  function show_repository_selection_dialog(repo_names: string[]) {
+  function show_repository_selection_dialog(repo_names: string[][]) {
     console.log(`repo_names -- ${repo_names}`);
     const dwidget = new DropDown(repo_names, "Select Repository");
     showDialog({
       title: "Repository Selection",
       body: dwidget,
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.okButton({ label: "Next" })
+      ]
+    }).then(result => {
+      if (!result.button.accept) {
+        return;
+      }
+      let repo_name = dwidget.getTo();
+      show_file_selection_dialog(repo_name);
+    });
+  }
+
+
+  function show_file_selection_dialog(repo_path: string) {
+    console.log(`repo_path -- ${repo_path}`);
+    const files = get_open_files(editorTracker, notebookTracker);
+    let relevant_files: string[] = []
+
+    for (const f of files) {
+      if (f.startsWith(repo_path)) {
+        relevant_files.push(f.substring(repo_path.length + 1))
+      }
+    }
+
+    const cwidget = new CheckBoxes(relevant_files);
+    showDialog({
+      title: "Select Files",
+      body: cwidget,
       buttons: [
         Dialog.cancelButton(),
         Dialog.okButton({ label: "Next" })
@@ -66,12 +96,13 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
 
 function get_open_files(editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
   let result: string[] = []
+  let base_dir = PageConfig.getOption('serverRoot');
 
   notebookTracker.forEach(notebook => {
-    result.push(notebook.context.path);
+    result.push(base_dir + '/' + notebook.context.path);
   });
   editorTracker.forEach(editor => {
-    result.push(editor.context.path);
+    result.push(base_dir + '/' + editor.context.path);
   });
   return result;
 
@@ -81,7 +112,7 @@ export default gitPlusPlugin;
 
 class DropDown extends Widget {
   constructor(
-    options: string[] = [],
+    options: string[][] = [],
     label: string = "") {
 
     const body = document.createElement("div");
@@ -92,6 +123,25 @@ class DropDown extends Widget {
     super({ node: body });
   }
 
+  get toNode(): HTMLSelectElement {
+    return this.node.getElementsByTagName("select")[0] as HTMLSelectElement;
+  }
+
+  public getTo(): string {
+    return this.toNode.value;
+  }
+}
+
+class CheckBoxes extends Widget {
+  constructor(items: string[] = []) {
+    const basic = document.createElement("div");
+
+    for (const item of items) {
+      basic.appendChild(Private.buildCheckbox(item));
+    }
+    super({ node: basic });
+  }
+
   get toNode(): HTMLTextAreaElement {
     return this.node.getElementsByTagName("textarea")[0] as HTMLTextAreaElement;
   }
@@ -99,7 +149,6 @@ class DropDown extends Widget {
   public getTo(): string {
     return this.toNode.value;
   }
-
 }
 
 
@@ -121,6 +170,20 @@ namespace Private {
   }
 
   export
+    function buildCheckbox(text: string): HTMLSpanElement {
+    const span = document.createElement("span");
+    const label = document.createElement("label");
+    const input = document.createElement("input");
+    input.id = text;
+    input.type = "checkbox";
+    label.htmlFor = text;
+    label.textContent = text;
+    span.appendChild(input);
+    span.appendChild(label);
+    return span;
+  }
+
+  export
     function buildTextarea(text: string): HTMLTextAreaElement {
     const area = document.createElement("textarea");
     area.placeholder = text;
@@ -129,16 +192,16 @@ namespace Private {
   }
 
   export
-    function buildSelect(list: string[], _class = "", def?: string): HTMLSelectElement {
+    function buildSelect(list: string[][], _class = "", def?: string): HTMLSelectElement {
     const select = document.createElement("select");
     select.appendChild(default_none);
     for (const x of list) {
       const option = document.createElement("option");
-      option.value = x;
-      option.textContent = x;
+      option.value = x[1];
+      option.textContent = x[0];
       select.appendChild(option);
 
-      if (def && x === def) {
+      if (def && x[0] === def) {
         option.selected = true;
       }
 

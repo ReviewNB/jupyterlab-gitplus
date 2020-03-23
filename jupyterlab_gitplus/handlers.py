@@ -12,12 +12,16 @@ class ModifiedRepositoryListHandler(IPythonHandler):
         body = json.loads(self.request.body)
         body = body['files']
         repositories = []
+        unique_paths = set()
         response = []
 
         for file in body:
             try:
                 repo = git.Repo(file['path'], search_parent_directories=True)
-                repositories.append(repo)
+
+                if repo.working_dir not in unique_paths:
+                    unique_paths.add(repo.working_dir)
+                    repositories.append(repo)
             except git.exc.NoSuchPathError:
                 print('File not found: ' + file['path'])
             except git.exc.InvalidGitRepositoryError:
