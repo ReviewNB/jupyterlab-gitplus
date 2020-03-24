@@ -5,7 +5,7 @@ import { INotebookTracker } from "@jupyterlab/notebook";
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { Menu } from '@lumino/widgets';
 import { get_json_request_payload_from_file_list } from './utility';
-import { get_modified_repositories } from './api_client';
+import { get_modified_repositories, create_pull_request } from './api_client';
 import { PageConfig } from "@jupyterlab/coreutils";
 import { CheckBoxes, DropDown, CommitPRMessageDialog } from './ui_elements';
 
@@ -100,6 +100,16 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
       if (!result.button.accept) {
         return;
       }
+      let commit_message = cprwidget.getCommitMessage();
+      let pr_title = cprwidget.getPRTitle();
+      let body = {
+        "files": files,
+        "repo_path": repo_path,
+        "commit_message": commit_message,
+        "pr_title": pr_title
+      }
+      create_pull_request(body);
+
     });
 
   }

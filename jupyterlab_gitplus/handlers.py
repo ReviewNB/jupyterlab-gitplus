@@ -1,7 +1,13 @@
 import json
 import git
 import os
+import random
+import string
 from notebook.base.handlers import IPythonHandler
+from git import Repo
+from shutil import copyfile
+from .github_v3 import create_pull_request
+from .utils import get_owner_login_and_repo_name
 
 
 class ModifiedRepositoryListHandler(IPythonHandler):
@@ -17,7 +23,7 @@ class ModifiedRepositoryListHandler(IPythonHandler):
 
         for file in body:
             try:
-                repo = git.Repo(file['path'], search_parent_directories=True)
+                repo = Repo(file['path'], search_parent_directories=True)
 
                 if repo.working_dir not in unique_paths:
                     unique_paths.add(repo.working_dir)
@@ -36,6 +42,50 @@ class ModifiedRepositoryListHandler(IPythonHandler):
             })
 
         self.finish(json.dumps(response))
+
+
+class PullRequestHandler(IPythonHandler):
+    def initialize(self, github_token=''):
+        self.github_token = github_token
+
+    def post(self):
+        print('gh_token--' + self.github_token)
+        body = json.loads(self.request.body)
+        file_paths = body['files']
+        repo_path = body['repo_path']
+        commit_msg = body['commit_message']
+        pr_title = body['pr_title']
+        temp_repo_path = "/tmp/temp_repo.git"
+        existing_files = [repo_path + '/' + file_path for file_path in file_paths]
+        new_files = [temp_repo_path + '/' + file_path for file_path in file_paths]
+        repo = Repo(repo_path)
+        new_repo = repo.clone(temp_repo_path)
+
+        for i, existing_file in enumerate(existing_files):
+            copyfile(existing_file, new_files[i])
+
+        new_branch_name = 'gitplus-' + ''.join(random.choices(string.ascii_lowercase + string.digits, k = 8))
+        new_repo.git.checkout('-b', new_branch_name)
+
+        for file in file_paths:
+            new_repo.git.add(file)
+
+        new_repo.index.commit(commit_msg)
+        new_repo.git.push('--set-upstream', 'origin', new_repo.active_branch.name)
+        owner_login, repo_name = get_owner_login_and_repo_name(new_repo)
+        result = create_pull_request(
+                owner_login=owner_login,
+                repo_name=repo_name,
+                title=pr_title,
+                head=new_branch_name,
+                base='master',
+                access_token=self.github_token)
+        self.finish(json.dumps(result))
+
+
+
+
+
 
 
 

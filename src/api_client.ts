@@ -21,3 +21,17 @@ export function get_modified_repositories(data: {}, show_repository_selection_di
             console.log(error)
         });
 }
+
+
+export function create_pull_request(data: {}) {
+    return HTTP.post("gitplus/pull_request", data)
+        .then(function (response) {
+            let result = response.data;
+            let github_url = result['github_url']
+            let reviewnb_url = result['reviewnb_url']
+            console.log(`${github_url} --create_pull_request-- ${reviewnb_url}`);
+        })
+        .catch(function (error) {
+            console.log(error)
+        });
+}

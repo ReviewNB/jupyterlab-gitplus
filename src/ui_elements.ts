@@ -61,18 +61,28 @@ export class CommitPRMessageDialog extends Widget {
         const basic = document.createElement("div");
         body.appendChild(basic);
         basic.appendChild(Private.buildLabel("Commit message: "));
-        basic.appendChild(Private.buildTextarea("Enter your commit message", style));
+        basic.appendChild(Private.buildTextarea("Enter your commit message", "gitplus-commit-message", style));
         basic.appendChild(Private.buildLabel("PR title: "));
-        basic.appendChild(Private.buildTextarea("Enter title for pull request", style));
+        basic.appendChild(Private.buildTextarea("Enter title for pull request", "gitplus-pr-message", style));
         super({ node: body });
     }
 
-    get toNode(): HTMLSelectElement {
-        return this.node.getElementsByTagName("select")[0] as HTMLSelectElement;
+    public getCommitMessage(): string {
+        let textareas = this.node.getElementsByTagName("textarea");
+        for (const textarea of textareas) {
+            if (textarea.id == 'gitplus-commit-message') {
+                return textarea.value;
+            }
+        }
     }
 
-    public getTo(): string {
-        return this.toNode.value;
+    public getPRTitle(): string {
+        let textareas = this.node.getElementsByTagName("textarea");
+        for (const textarea of textareas) {
+            if (textarea.id == 'gitplus-pr-message') {
+                return textarea.value;
+            }
+        }
     }
 }
 
@@ -108,15 +118,11 @@ namespace Private {
     }
 
     export
-        function buildTextarea(text: string, style: {} = {}): HTMLTextAreaElement {
+        function buildTextarea(text: string, id: string, style: {} = {}): HTMLTextAreaElement {
         let area = document.createElement("textarea");
         area.placeholder = text;
+        area.id = id;
         apply_style(area, style)
-
-        //area.style.marginTop = "3px";
-        //area.style.display = "block";
-        //area.style.marginBottom = "15px";
-        //area.style.minWidth = "30em";
         return area;
     }
 
