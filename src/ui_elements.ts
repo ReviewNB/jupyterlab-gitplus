@@ -4,14 +4,21 @@ export class PRCreated extends Widget {
     constructor(
         github_url: string,
         reviewnb_url: string) {
+        let anchor_style = {
+            "color": "#106ba3",
+            "text-decoration": "underline"
+        }
 
         const body = document.createElement("div");
         const basic = document.createElement("div");
         body.appendChild(basic);
         basic.appendChild(Private.buildLabel("Pull Request on GitHub: "));
-        basic.appendChild(Private.buildAnchor(github_url, github_url));
+        basic.appendChild(Private.buildAnchor(github_url, github_url, anchor_style));
+        basic.appendChild(Private.buildNewline());
+        basic.appendChild(Private.buildNewline());
         basic.appendChild(Private.buildLabel("Pull Request on ReviewNB: "));
-        basic.appendChild(Private.buildAnchor(reviewnb_url, reviewnb_url));
+        basic.appendChild(Private.buildAnchor(reviewnb_url, reviewnb_url, anchor_style));
+        basic.appendChild(Private.buildNewline());
         super({ node: body });
     }
 }
@@ -116,11 +123,17 @@ namespace Private {
         return label;
     }
 
-    export function buildAnchor(url: string, text: string): HTMLAnchorElement {
+    export function buildAnchor(url: string, text: string, style: {} = {}): HTMLAnchorElement {
         const anchor = document.createElement("a");
         anchor.href = url;
         anchor.text = text;
+        anchor.target = "_blank";
+        apply_style(anchor, style)
         return anchor;
+    }
+
+    export function buildNewline(): HTMLBRElement {
+        return document.createElement("br");
     }
 
     export function buildCheckbox(text: string): HTMLSpanElement {
@@ -178,6 +191,12 @@ namespace Private {
         }
         if ("minWidth" in style) {
             element.style.minWidth = style["minWidth"];
+        }
+        if ("color" in style) {
+            element.style.color = style["color"];
+        }
+        if ("text-decoration" in style) {
+            element.style.textDecoration = style["text-decoration"];
         }
         return element;
     }
