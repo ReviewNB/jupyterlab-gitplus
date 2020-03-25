@@ -7,7 +7,7 @@ import { Menu } from '@lumino/widgets';
 import { get_json_request_payload_from_file_list } from './utility';
 import { get_modified_repositories, create_pull_request } from './api_client';
 import { PageConfig } from "@jupyterlab/coreutils";
-import { CheckBoxes, DropDown, CommitPRMessageDialog } from './ui_elements';
+import { CheckBoxes, DropDown, CommitPRMessageDialog, PRCreated } from './ui_elements';
 
 /**
  * The plugin registration information.
@@ -23,7 +23,7 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v37');
+  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v38');
   // Create new command
   const commandID = 'create-pr';
   app.commands.addCommand(commandID, {
@@ -55,7 +55,6 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
       show_file_selection_dialog(repo_name);
     });
   }
-
 
   function show_file_selection_dialog(repo_path: string) {
     console.log(`repo_path -- ${repo_path}`);
@@ -108,8 +107,26 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
         "commit_message": commit_message,
         "pr_title": pr_title
       }
-      create_pull_request(body);
+      create_pull_request(body, show_pr_created_dialog);
+    });
 
+  }
+
+  function show_pr_created_dialog(github_url: string, reviewnb_url: string) {
+    console.log(`${github_url} --show_pr_created_dialog-- ${reviewnb_url}`);
+    const prcwidget = new PRCreated(github_url, reviewnb_url);
+
+    showDialog({
+      title: "Pull Request Created",
+      body: prcwidget,
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.okButton({ label: "Okay" })
+      ]
+    }).then(result => {
+      if (!result.button.accept) {
+        return;
+      }
     });
 
   }

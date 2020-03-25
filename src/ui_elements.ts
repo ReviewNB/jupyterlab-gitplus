@@ -1,5 +1,20 @@
 import { Widget } from '@lumino/widgets';
 
+export class PRCreated extends Widget {
+    constructor(
+        github_url: string,
+        reviewnb_url: string) {
+
+        const body = document.createElement("div");
+        const basic = document.createElement("div");
+        body.appendChild(basic);
+        basic.appendChild(Private.buildLabel("Pull Request on GitHub: "));
+        basic.appendChild(Private.buildAnchor(github_url, github_url));
+        basic.appendChild(Private.buildLabel("Pull Request on ReviewNB: "));
+        basic.appendChild(Private.buildAnchor(reviewnb_url, reviewnb_url));
+        super({ node: body });
+    }
+}
 
 export class DropDown extends Widget {
     constructor(
@@ -95,16 +110,20 @@ namespace Private {
     default_none.style.display = "none";
     default_none.value = "";
 
-    export
-        function buildLabel(text: string): HTMLLabelElement {
+    export function buildLabel(text: string): HTMLLabelElement {
         const label = document.createElement("label");
         label.textContent = text;
-        label.id = 'id123';
         return label;
     }
 
-    export
-        function buildCheckbox(text: string): HTMLSpanElement {
+    export function buildAnchor(url: string, text: string): HTMLAnchorElement {
+        const anchor = document.createElement("a");
+        anchor.href = url;
+        anchor.text = text;
+        return anchor;
+    }
+
+    export function buildCheckbox(text: string): HTMLSpanElement {
         const span = document.createElement("span");
         const label = document.createElement("label");
         const input = document.createElement("input");
@@ -117,8 +136,7 @@ namespace Private {
         return span;
     }
 
-    export
-        function buildTextarea(text: string, id: string, style: {} = {}): HTMLTextAreaElement {
+    export function buildTextarea(text: string, id: string, style: {} = {}): HTMLTextAreaElement {
         let area = document.createElement("textarea");
         area.placeholder = text;
         area.id = id;
@@ -126,8 +144,7 @@ namespace Private {
         return area;
     }
 
-    export
-        function buildSelect(list: string[][], _class = "", def?: string): HTMLSelectElement {
+    export function buildSelect(list: string[][], _class = "", def?: string): HTMLSelectElement {
         const select = document.createElement("select");
         select.appendChild(default_none);
         for (const x of list) {

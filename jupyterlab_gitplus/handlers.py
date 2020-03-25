@@ -5,7 +5,7 @@ import random
 import string
 from notebook.base.handlers import IPythonHandler
 from git import Repo
-from shutil import copyfile
+from shutil import copyfile, rmtree
 from .github_v3 import create_pull_request
 from .utils import get_owner_login_and_repo_name
 
@@ -49,23 +49,25 @@ class PullRequestHandler(IPythonHandler):
         self.github_token = github_token
 
     def post(self):
-        print('gh_token--' + self.github_token)
         body = json.loads(self.request.body)
         file_paths = body['files']
         repo_path = body['repo_path']
         commit_msg = body['commit_message']
         pr_title = body['pr_title']
         temp_repo_path = "/tmp/temp_repo.git"
+        rmtree(temp_repo_path, ignore_errors=True)
         existing_files = [repo_path + '/' + file_path for file_path in file_paths]
         new_files = [temp_repo_path + '/' + file_path for file_path in file_paths]
+
         repo = Repo(repo_path)
         new_repo = repo.clone(temp_repo_path)
+        new_repo.remotes.origin.set_url(repo.remotes.origin.url)
+        new_repo.git.checkout("master")
+        new_branch_name = 'gitplus-' + ''.join(random.choices(string.ascii_lowercase + string.digits, k = 8))
+        new_repo.git.checkout('-b', new_branch_name)
 
         for i, existing_file in enumerate(existing_files):
             copyfile(existing_file, new_files[i])
-
-        new_branch_name = 'gitplus-' + ''.join(random.choices(string.ascii_lowercase + string.digits, k = 8))
-        new_repo.git.checkout('-b', new_branch_name)
 
         for file in file_paths:
             new_repo.git.add(file)
