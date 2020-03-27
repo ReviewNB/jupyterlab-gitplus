@@ -23,6 +23,29 @@ export class PRCreated extends Widget {
     }
 }
 
+export class CommitPushed extends Widget {
+    constructor(
+        github_url: string,
+        reviewnb_url: string) {
+        let anchor_style = {
+            "color": "#106ba3",
+            "text-decoration": "underline"
+        }
+
+        const body = document.createElement("div");
+        const basic = document.createElement("div");
+        body.appendChild(basic);
+        basic.appendChild(Private.buildLabel("Commit on GitHub: "));
+        basic.appendChild(Private.buildAnchor(github_url, github_url, anchor_style));
+        basic.appendChild(Private.buildNewline());
+        basic.appendChild(Private.buildNewline());
+        basic.appendChild(Private.buildLabel("Commit on ReviewNB: "));
+        basic.appendChild(Private.buildAnchor(reviewnb_url, reviewnb_url, anchor_style));
+        basic.appendChild(Private.buildNewline());
+        super({ node: body });
+    }
+}
+
 export class DropDown extends Widget {
     constructor(
         options: string[][] = [],
@@ -102,6 +125,33 @@ export class CommitPRMessageDialog extends Widget {
         let textareas = this.node.getElementsByTagName("textarea");
         for (const textarea of textareas) {
             if (textarea.id == 'gitplus-pr-message') {
+                return textarea.value;
+            }
+        }
+    }
+}
+
+export class CommitMessageDialog extends Widget {
+    constructor() {
+        const style = {
+            "marginTop": "3px",
+            "display": "block",
+            "marginBottom": "15px",
+            "minWidth": "30em"
+        }
+
+        const body = document.createElement("div");
+        const basic = document.createElement("div");
+        body.appendChild(basic);
+        basic.appendChild(Private.buildLabel("Commit message: "));
+        basic.appendChild(Private.buildTextarea("Enter your commit message", "gitplus-commit-message", style));
+        super({ node: body });
+    }
+
+    public getCommitMessage(): string {
+        let textareas = this.node.getElementsByTagName("textarea");
+        for (const textarea of textareas) {
+            if (textarea.id == 'gitplus-commit-message') {
                 return textarea.value;
             }
         }

@@ -5,9 +5,9 @@ import { INotebookTracker } from "@jupyterlab/notebook";
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { Menu } from '@lumino/widgets';
 import { get_json_request_payload_from_file_list } from './utility';
-import { get_modified_repositories, create_pull_request } from './api_client';
+import { get_modified_repositories, create_pull_request, create_and_push_commit } from './api_client';
 import { PageConfig } from "@jupyterlab/coreutils";
-import { CheckBoxes, DropDown, CommitPRMessageDialog, PRCreated } from './ui_elements';
+import { CheckBoxes, DropDown, CommitPRMessageDialog, CommitMessageDialog, PRCreated, CommitPushed } from './ui_elements';
 
 /**
  * The plugin registration information.
@@ -24,20 +24,28 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
   console.log('JupyterLab extension @reviewnb/gitplus is activated! - v38');
-  // Create new command
-  const commandID = 'create-pr';
-  app.commands.addCommand(commandID, {
+  const createPRCommand = 'create-pr';
+  app.commands.addCommand(createPRCommand, {
     label: 'Create Pull Request',
     execute: () => {
       const files = get_open_files(editorTracker, notebookTracker);
-      console.log(`Open files -- ${files}`);
       const data = get_json_request_payload_from_file_list(files);
-      get_modified_repositories(data, show_repository_selection_dialog);
+      get_modified_repositories(data, show_repository_selection_dialog, createPRCommand);
+    }
+  });
+
+  const pushCommitCommand = 'push-commit';
+  app.commands.addCommand(pushCommitCommand, {
+    label: 'Push Commit',
+    execute: () => {
+      const files = get_open_files(editorTracker, notebookTracker);
+      const data = get_json_request_payload_from_file_list(files);
+      get_modified_repositories(data, show_repository_selection_dialog, pushCommitCommand);
     }
   });
 
 
-  function show_repository_selection_dialog(repo_names: string[][]) {
+  function show_repository_selection_dialog(repo_names: string[][], command: string) {
     console.log(`repo_names -- ${repo_names}`);
     const dwidget = new DropDown(repo_names, "Select Repository");
     showDialog({
@@ -52,11 +60,11 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
         return;
       }
       let repo_name = dwidget.getTo();
-      show_file_selection_dialog(repo_name);
+      show_file_selection_dialog(repo_name, command);
     });
   }
 
-  function show_file_selection_dialog(repo_path: string) {
+  function show_file_selection_dialog(repo_path: string, command: string) {
     console.log(`repo_path -- ${repo_path}`);
     const files = get_open_files(editorTracker, notebookTracker);
     let relevant_files: string[] = []
@@ -80,7 +88,37 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
         return;
       }
       let files = cwidget.getSelected();
-      show_commit_pr_message_dialog(repo_path, files);
+
+      if (command == createPRCommand) {
+        show_commit_pr_message_dialog(repo_path, files);
+      } else if (command == pushCommitCommand) {
+        show_commit_message_dialog(repo_path, files);
+      }
+    });
+  }
+
+  function show_commit_message_dialog(repo_path: string, files: string[]) {
+    console.log(`${repo_path} --show_commit_message_dialog-- ${files}`);
+    const cmwidget = new CommitMessageDialog();
+
+    showDialog({
+      title: "Provide Details",
+      body: cmwidget,
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.okButton({ label: "Create & Push Commit" })
+      ]
+    }).then(result => {
+      if (!result.button.accept) {
+        return;
+      }
+      let commit_message = cmwidget.getCommitMessage();
+      let body = {
+        "files": files,
+        "repo_path": repo_path,
+        "commit_message": commit_message,
+      }
+      create_and_push_commit(body, show_commit_pushed_dialog);
     });
   }
 
@@ -109,7 +147,6 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
       }
       create_pull_request(body, show_pr_created_dialog);
     });
-
   }
 
   function show_pr_created_dialog(github_url: string, reviewnb_url: string) {
@@ -131,14 +168,37 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
 
   }
 
+  function show_commit_pushed_dialog(github_url: string, reviewnb_url: string) {
+    console.log(`${github_url} --show_commit_pushed_dialog-- ${reviewnb_url}`);
+    const prcwidget = new CommitPushed(github_url, reviewnb_url);
+
+    showDialog({
+      title: "Commit pushed!",
+      body: prcwidget,
+      buttons: [
+        Dialog.cancelButton(),
+        Dialog.okButton({ label: "Okay" })
+      ]
+    }).then(result => {
+      if (!result.button.accept) {
+        return;
+      }
+    });
+
+  }
+
   // Create new top level menu
   const menu = new Menu({ commands: app.commands });
   menu.title.label = 'Git-Plus';
   mainMenu.addMenu(menu, { rank: 40 });
 
-  // Add command to menu
+  // Add commands to menu
   menu.addItem({
-    command: commandID,
+    command: createPRCommand,
+    args: {},
+  });
+  menu.addItem({
+    command: pushCommitCommand,
     args: {},
   });
 };

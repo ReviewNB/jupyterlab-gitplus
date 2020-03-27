@@ -6,7 +6,7 @@ export const HTTP = axios.create({
 });
 
 
-export function get_modified_repositories(data: {}, show_repository_selection_dialog: Function) {
+export function get_modified_repositories(data: {}, show_repository_selection_dialog: Function, command: string) {
     let repo_names: string[][] = []
     return HTTP.post("gitplus/modified_repo", data)
         .then(function (response) {
@@ -15,7 +15,7 @@ export function get_modified_repositories(data: {}, show_repository_selection_di
                 let display_name = repo['name'] + ' (' + repo['path'] + ')';
                 repo_names.push([display_name, repo['path']])
             }
-            show_repository_selection_dialog(repo_names);
+            show_repository_selection_dialog(repo_names, command);
         })
         .catch(function (error) {
             console.log(error)
@@ -31,6 +31,21 @@ export function create_pull_request(data: {}, show_pr_created_dialog: Function) 
             let reviewnb_url = result['reviewnb_url']
             console.log(`${github_url} --create_pull_request-- ${reviewnb_url}`);
             show_pr_created_dialog(github_url, reviewnb_url)
+        })
+        .catch(function (error) {
+            console.log(error)
+        });
+}
+
+
+export function create_and_push_commit(data: {}, show_commit_pushed_dialog: Function) {
+    return HTTP.post("gitplus/commit", data)
+        .then(function (response) {
+            let result = response.data;
+            let github_url = result['github_url']
+            let reviewnb_url = result['reviewnb_url']
+            console.log(`${github_url} --create_and_push_commit-- ${reviewnb_url}`);
+            show_commit_pushed_dialog(github_url, reviewnb_url)
         })
         .catch(function (error) {
             console.log(error)

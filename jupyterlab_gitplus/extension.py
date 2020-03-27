@@ -1,5 +1,5 @@
 from notebook.utils import url_path_join
-from .handlers import ModifiedRepositoryListHandler, PullRequestHandler
+from .handlers import ModifiedRepositoryListHandler, PullRequestHandler, CommitHandler
 
 
 def load_jupyter_server_extension(nb_server_app):
@@ -18,3 +18,4 @@ def load_jupyter_server_extension(nb_server_app):
 
     web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/modified_repo'), ModifiedRepositoryListHandler)])
     web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/pull_request'), PullRequestHandler, context)])
+    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/commit'), CommitHandler, context)])

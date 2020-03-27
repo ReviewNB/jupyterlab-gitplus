@@ -10,6 +10,9 @@ from .github_v3 import create_pull_request
 from .utils import get_owner_login_and_repo_name
 
 
+GITHUB_ENDPOINT = 'https://github.com/'
+REVIEWNB_ENDPOINT = 'https://app.reviewnb.com/'
+
 class ModifiedRepositoryListHandler(IPythonHandler):
     '''
     Given a list of recently opened files we return repositories to which these files belong to (if the file is under a git repository)
@@ -49,6 +52,9 @@ class PullRequestHandler(IPythonHandler):
         self.github_token = github_token
 
     def post(self):
+        '''
+        Create a pull request
+        '''
         body = json.loads(self.request.body)
         file_paths = body['files']
         repo_path = body['repo_path']
@@ -85,8 +91,40 @@ class PullRequestHandler(IPythonHandler):
         self.finish(json.dumps(result))
 
 
+class CommitHandler(IPythonHandler):
+    def initialize(self, github_token=''):
+        self.github_token = github_token
+
+    def post(self):
+        '''
+        Push commit
+        '''
+        body = json.loads(self.request.body)
+        file_paths = body['files']
+        repo_path = body['repo_path']
+        commit_msg = body['commit_message']
+        repo = Repo(repo_path)
+        old_commit = repo.head.commit.hexsha
+
+        for file in file_paths:
+            repo.git.add(file)
+
+        repo.index.commit(commit_msg)
+        repo.git.push('--set-upstream', 'origin', repo.active_branch.name)  # --set-upstream will create remote branch if required
+        new_commit = repo.head.commit.hexsha
+
+        if old_commit != new_commit:
+            owner_login, repo_name = get_owner_login_and_repo_name(repo)
+            github_url = GITHUB_ENDPOINT + owner_login + '/' + repo_name + '/commit/' + new_commit
+            reviewnb_url = REVIEWNB_ENDPOINT + owner_login + '/' + repo_name + '/commit/' + new_commit
 
 
+            result = {
+                "github_url": github_url,
+                "reviewnb_url": reviewnb_url
+            }
+
+            self.finish(json.dumps(result))
 
 
 
