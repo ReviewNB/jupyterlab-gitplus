@@ -8,7 +8,7 @@ def create_pull_request(owner_login, repo_name, title, head, base, access_token)
     content = {}
     url = GITHUB_REST_ENDPOINT + 'repos/' + owner_login + '/' + repo_name + '/pulls'
     headers = {
-        'Authorization': 'token ' + access_token,
+        'Authorization': 'token ' + access_token
     }
     data = {
         'title': title,
@@ -27,3 +27,28 @@ def create_pull_request(owner_login, repo_name, title, head, base, access_token)
         return result
     except Exception as ex:
         raise(ex)
+
+
+def get_repository_details_for_pr(owner_login, repo_name, access_token, new_branch_name):
+    '''
+    Checks if the repository is forked from another repository.
+    If yes, returns (parent_owner_login, parent_repo_name, owner_login:new_branch_name, parent_default_branch)
+    If no, returns (owner_login, repo_name, new_branch_name, default_branch) of the repo passed in the argument.
+    '''
+    repo = get_repository(owner_login, repo_name, access_token)
+    if repo['fork']:
+        # passed in repo is a fork
+        head = owner_login + ':' + new_branch_name
+        return repo['parent']['owner']['login'], repo['parent']['name'], head, repo['parent']['default_branch']
+    else:
+        return owner_login, repo_name, new_branch_name, repo['default_branch']
+
+
+def get_repository(owner_login, repo_name, access_token):
+    url = GITHUB_REST_ENDPOINT + 'repos/' + owner_login + '/' + repo_name
+    headers = {
+        'Authorization': 'token ' + access_token
+    }
+    response = retriable_requests().get(url, headers=headers)
+    response.raise_for_status()
+    return json.loads(response.content)

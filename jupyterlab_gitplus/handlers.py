@@ -6,7 +6,7 @@ import string
 from notebook.base.handlers import IPythonHandler
 from git import Repo
 from shutil import copyfile, rmtree
-from .github_v3 import create_pull_request
+from .github_v3 import create_pull_request, get_repository_details_for_pr
 from .utils import get_owner_login_and_repo_name
 
 
@@ -80,13 +80,15 @@ class PullRequestHandler(IPythonHandler):
 
         new_repo.index.commit(commit_msg)
         new_repo.git.push('--set-upstream', 'origin', new_repo.active_branch.name)
+        repo.remotes.origin.fetch(new_branch_name + ':' + new_branch_name)  # fetch newly created branch
         owner_login, repo_name = get_owner_login_and_repo_name(new_repo)
+        base_owner_login, base_repo_name, head, base = get_repository_details_for_pr(owner_login, repo_name, self.github_token, new_branch_name)
         result = create_pull_request(
-                owner_login=owner_login,
-                repo_name=repo_name,
+                owner_login=base_owner_login,
+                repo_name=base_repo_name,
                 title=pr_title,
-                head=new_branch_name,
-                base='master',
+                head=head,
+                base=base,
                 access_token=self.github_token)
         self.finish(json.dumps(result))
 
