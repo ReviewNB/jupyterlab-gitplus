@@ -26,12 +26,16 @@ export class PRCreated extends Widget {
 
         const body = document.createElement("div");
         const basic = document.createElement("div");
+        basic.classList.add('gitPlusDialogBody');
         body.appendChild(basic);
-        basic.appendChild(Private.buildLabel("Pull Request on GitHub: "));
+        basic.appendChild(Private.buildLabel("See pull request on GitHub: "));
+        basic.appendChild(Private.buildNewline());
         basic.appendChild(Private.buildAnchor(github_url, github_url, anchor_style));
         basic.appendChild(Private.buildNewline());
         basic.appendChild(Private.buildNewline());
-        basic.appendChild(Private.buildLabel("Pull Request on ReviewNB: "));
+        basic.appendChild(Private.buildNewline());
+        basic.appendChild(Private.buildLabel("See pull request on ReviewNB: "));
+        basic.appendChild(Private.buildNewline());
         basic.appendChild(Private.buildAnchor(reviewnb_url, reviewnb_url, anchor_style));
         basic.appendChild(Private.buildNewline());
         super({ node: body });
@@ -49,12 +53,16 @@ export class CommitPushed extends Widget {
 
         const body = document.createElement("div");
         const basic = document.createElement("div");
+        basic.classList.add('gitPlusDialogBody');
         body.appendChild(basic);
-        basic.appendChild(Private.buildLabel("Commit on GitHub: "));
+        basic.appendChild(Private.buildLabel("See commit on GitHub: "));
+        basic.appendChild(Private.buildNewline());
         basic.appendChild(Private.buildAnchor(github_url, github_url, anchor_style));
         basic.appendChild(Private.buildNewline());
         basic.appendChild(Private.buildNewline());
-        basic.appendChild(Private.buildLabel("Commit on ReviewNB: "));
+        basic.appendChild(Private.buildNewline());
+        basic.appendChild(Private.buildLabel("See commit on ReviewNB: "));
+        basic.appendChild(Private.buildNewline());
         basic.appendChild(Private.buildAnchor(reviewnb_url, reviewnb_url, anchor_style));
         basic.appendChild(Private.buildNewline());
         super({ node: body });
@@ -99,6 +107,7 @@ export class DropDown extends Widget {
 export class CheckBoxes extends Widget {
     constructor(items: string[] = []) {
         const basic = document.createElement("div");
+        basic.classList.add('gitPlusDialogBody');
 
         for (const item of items) {
             basic.appendChild(Private.buildCheckbox(item));
@@ -123,20 +132,14 @@ export class CheckBoxes extends Widget {
 
 export class CommitPRMessageDialog extends Widget {
     constructor() {
-        const style = {
-            "margin-top": "3px",
-            "display": "block",
-            "margin-bottom": "15px",
-            "min-width": "30em"
-        }
-
         const body = document.createElement("div");
         const basic = document.createElement("div");
+        basic.classList.add('gitPlusDialogBody');
         body.appendChild(basic);
         basic.appendChild(Private.buildLabel("Commit message: "));
-        basic.appendChild(Private.buildTextarea("Enter your commit message", "gitplus-commit-message", style));
+        basic.appendChild(Private.buildTextarea('Enter your commit message', 'gitplus-commit-message', 'gitPlusMessageTextArea'));
         basic.appendChild(Private.buildLabel("PR title: "));
-        basic.appendChild(Private.buildTextarea("Enter title for pull request", "gitplus-pr-message", style));
+        basic.appendChild(Private.buildTextarea('Enter title for pull request', 'gitplus-pr-message', 'gitPlusMessageTextArea'));
         super({ node: body });
     }
 
@@ -161,18 +164,12 @@ export class CommitPRMessageDialog extends Widget {
 
 export class CommitMessageDialog extends Widget {
     constructor() {
-        const style = {
-            "margin-top": "3px",
-            "display": "block",
-            "margin-bottom": "15px",
-            "min-width": "30em"
-        }
-
         const body = document.createElement("div");
         const basic = document.createElement("div");
+        basic.classList.add('gitPlusDialogBody');
         body.appendChild(basic);
         basic.appendChild(Private.buildLabel("Commit message: "));
-        basic.appendChild(Private.buildTextarea("Enter your commit message", "gitplus-commit-message", style));
+        basic.appendChild(Private.buildTextarea('Enter your commit message', 'gitplus-commit-message', 'gitPlusMessageTextArea'));
         super({ node: body });
     }
 
@@ -228,11 +225,11 @@ namespace Private {
         return span;
     }
 
-    export function buildTextarea(text: string, id: string, style: {} = {}): HTMLTextAreaElement {
+    export function buildTextarea(text: string, id: string, _class: string): HTMLTextAreaElement {
         let area = document.createElement("textarea");
         area.placeholder = text;
         area.id = id;
-        apply_style(area, style)
+        area.classList.add(_class);
         return area;
     }
 

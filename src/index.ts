@@ -23,7 +23,7 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v47');
+  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v50');
   const createPRCommand = 'create-pr';
   app.commands.addCommand(createPRCommand, {
     label: 'Create Pull Request',
@@ -81,7 +81,6 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   }
 
   function show_file_selection_dialog(repo_path: string, command: string) {
-    console.log(`repo_path -- ${repo_path}`);
     const files = get_open_files(editorTracker, notebookTracker);
     let relevant_files: string[] = []
 

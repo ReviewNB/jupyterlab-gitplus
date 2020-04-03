@@ -2,3 +2,18 @@
     /* To center down arrow on Select Repository DropDown */
     top: 12px !important;
 }
+
+.gitPlusDialogBody {
+    padding-top: 2em;
+    padding-bottom: 2em;
+    border-top: 1px solid #dfe2e5;
+}
+
+.gitPlusMessageTextArea {
+    margin-top: 3px;
+    margin-bottom: 15px;
+    display: block;
+    min-width: 30em;
+    min-height: 3em;
+    font-size: 14px;
+}
