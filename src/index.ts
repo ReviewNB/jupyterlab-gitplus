@@ -7,7 +7,7 @@ import { Menu } from '@lumino/widgets';
 import { get_json_request_payload_from_file_list } from './utility';
 import { get_modified_repositories, create_pull_request, create_and_push_commit } from './api_client';
 import { PageConfig } from "@jupyterlab/coreutils";
-import { CheckBoxes, DropDown, CommitPRMessageDialog, CommitMessageDialog, PRCreated, CommitPushed } from './ui_elements';
+import { CheckBoxes, DropDown, CommitPRMessageDialog, CommitMessageDialog, PRCreated, CommitPushed, SpinnerDialog } from './ui_elements';
 
 /**
  * The plugin registration information.
@@ -23,7 +23,7 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v38');
+  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v43');
   const createPRCommand = 'create-pr';
   app.commands.addCommand(createPRCommand, {
     label: 'Create Pull Request',
@@ -202,6 +202,18 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
     args: {},
   });
 };
+
+export function show_spinner() {
+  const spinWidget = new SpinnerDialog();
+  showDialog({
+    title: "Waiting for response...",
+    body: spinWidget,
+    buttons: [
+      Dialog.cancelButton()
+    ]
+  }).then(result => {
+  });
+}
 
 function get_open_files(editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
   let result: string[] = []

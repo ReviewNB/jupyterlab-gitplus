@@ -1,5 +1,20 @@
 import { Widget } from '@lumino/widgets';
+import { Spinner } from "@jupyterlab/apputils";
 
+export class SpinnerDialog extends Widget {
+    constructor() {
+        let spinner_style = {
+            "marginTop": "6em",
+        }
+        const body = document.createElement("div");
+        const basic = document.createElement("div");
+        Private.apply_style(basic, spinner_style);
+        body.appendChild(basic);
+        const spinner = new Spinner();
+        basic.appendChild(spinner.node)
+        super({ node: body });
+    }
+}
 export class PRCreated extends Widget {
     constructor(
         github_url: string,
@@ -229,7 +244,7 @@ namespace Private {
         return select;
     }
 
-    function apply_style(element: HTMLElement, style: {}) {
+    export function apply_style(element: HTMLElement, style: {}) {
         if ("marginTop" in style) {
             element.style.marginTop = style["marginTop"];
         }
