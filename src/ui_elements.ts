@@ -4,7 +4,7 @@ import { Spinner } from "@jupyterlab/apputils";
 export class SpinnerDialog extends Widget {
     constructor() {
         let spinner_style = {
-            "marginTop": "6em",
+            "margin-top": "6em",
         }
         const body = document.createElement("div");
         const basic = document.createElement("div");
@@ -64,13 +64,26 @@ export class CommitPushed extends Widget {
 export class DropDown extends Widget {
     constructor(
         options: string[][] = [],
-        label: string = "") {
+        label: string = "",
+        styles: {} = {}) {
+        let body_style, label_style, select_style = {};
+
+        if ("body_style" in styles) {
+            body_style = styles["body_style"];
+        }
+        if ("label_style" in styles) {
+            label_style = styles["label_style"];
+        }
+        if ("select_style" in styles) {
+            select_style = styles["select_style"];
+        }
 
         const body = document.createElement("div");
+        Private.apply_style(body, body_style);
         const basic = document.createElement("div");
         body.appendChild(basic);
-        basic.appendChild(Private.buildLabel(label));
-        basic.appendChild(Private.buildSelect(options));
+        basic.appendChild(Private.buildLabel(label, label_style));
+        basic.appendChild(Private.buildSelect(options, select_style));
         super({ node: body });
     }
 
@@ -111,10 +124,10 @@ export class CheckBoxes extends Widget {
 export class CommitPRMessageDialog extends Widget {
     constructor() {
         const style = {
-            "marginTop": "3px",
+            "margin-top": "3px",
             "display": "block",
-            "marginBottom": "15px",
-            "minWidth": "30em"
+            "margin-bottom": "15px",
+            "min-width": "30em"
         }
 
         const body = document.createElement("div");
@@ -149,10 +162,10 @@ export class CommitPRMessageDialog extends Widget {
 export class CommitMessageDialog extends Widget {
     constructor() {
         const style = {
-            "marginTop": "3px",
+            "margin-top": "3px",
             "display": "block",
-            "marginBottom": "15px",
-            "minWidth": "30em"
+            "margin-bottom": "15px",
+            "min-width": "30em"
         }
 
         const body = document.createElement("div");
@@ -182,9 +195,10 @@ namespace Private {
     default_none.style.display = "none";
     default_none.value = "";
 
-    export function buildLabel(text: string): HTMLLabelElement {
+    export function buildLabel(text: string, style: {} = {}): HTMLLabelElement {
         const label = document.createElement("label");
         label.textContent = text;
+        apply_style(label, style)
         return label;
     }
 
@@ -222,7 +236,7 @@ namespace Private {
         return area;
     }
 
-    export function buildSelect(list: string[][], _class = "", def?: string): HTMLSelectElement {
+    export function buildSelect(list: string[][], style: {} = {}, def?: string): HTMLSelectElement {
         const select = document.createElement("select");
         select.appendChild(default_none);
         for (const x of list) {
@@ -234,34 +248,44 @@ namespace Private {
             if (def && x[0] === def) {
                 option.selected = true;
             }
-
-            if (_class) {
-                select.classList.add(_class);
-            }
         }
-        select.style.marginBottom = "15px";
-        select.style.minHeight = "25px";
+        apply_style(select, style);
         return select;
     }
 
     export function apply_style(element: HTMLElement, style: {}) {
-        if ("marginTop" in style) {
-            element.style.marginTop = style["marginTop"];
+        if ("margin-top" in style) {
+            element.style.marginTop = style["margin-top"];
         }
-        if ("marginBottom" in style) {
-            element.style.marginBottom = style["marginBottom"];
+        if ("margin-bottom" in style) {
+            element.style.marginBottom = style["margin-bottom"];
+        }
+        if ("padding-top" in style) {
+            element.style.paddingTop = style["padding-top"];
+        }
+        if ("padding-bottom" in style) {
+            element.style.paddingBottom = style["padding-bottom"];
+        }
+        if ("border-top" in style) {
+            element.style.borderTop = style["border-top"]
         }
         if ("display" in style) {
             element.style.display = style["display"];
         }
-        if ("minWidth" in style) {
-            element.style.minWidth = style["minWidth"];
+        if ("min-width" in style) {
+            element.style.minWidth = style["min-width"];
+        }
+        if ("min-height" in style) {
+            element.style.minHeight = style["min-height"];
         }
         if ("color" in style) {
             element.style.color = style["color"];
         }
         if ("text-decoration" in style) {
             element.style.textDecoration = style["text-decoration"];
+        }
+        if ("font-size" in style) {
+            element.style.fontSize = style["font-size"]
         }
         return element;
     }

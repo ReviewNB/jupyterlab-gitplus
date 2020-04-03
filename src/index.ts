@@ -23,7 +23,7 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v43');
+  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v47');
   const createPRCommand = 'create-pr';
   app.commands.addCommand(createPRCommand, {
     label: 'Create Pull Request',
@@ -46,8 +46,24 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
 
 
   function show_repository_selection_dialog(repo_names: string[][], command: string) {
-    console.log(`repo_names -- ${repo_names}`);
-    const dwidget = new DropDown(repo_names, "Select Repository");
+    let label_style = {
+      'font-size': '14px'
+    }
+    let body_style = {
+      'padding-top': '2em',
+      'padding-bottom': '2em',
+      'border-top': '1px solid #dfe2e5'
+    }
+    let select_style = {
+      'margin-top': '4px',
+      'min-height': '32px'
+    }
+    let styles = {
+      'label_style': label_style,
+      'body_style': body_style,
+      'select_style': select_style
+    }
+    const dwidget = new DropDown(repo_names, 'Select Repository', styles);
     showDialog({
       title: "Repository Selection",
       body: dwidget,
