@@ -32,7 +32,6 @@ export function create_pull_request(data: {}, show_pr_created_dialog: Function) 
             let result = response.data;
             let github_url = result['github_url']
             let reviewnb_url = result['reviewnb_url']
-            console.log(`${github_url} --create_pull_request-- ${reviewnb_url}`);
             Dialog.flush(); // remove spinner
             show_pr_created_dialog(github_url, reviewnb_url)
         })
@@ -49,7 +48,6 @@ export function create_and_push_commit(data: {}, show_commit_pushed_dialog: Func
             let result = response.data;
             let github_url = result['github_url']
             let reviewnb_url = result['reviewnb_url']
-            console.log(`${github_url} --create_and_push_commit-- ${reviewnb_url}`);
             Dialog.flush(); // remove spinner
             show_commit_pushed_dialog(github_url, reviewnb_url)
         })

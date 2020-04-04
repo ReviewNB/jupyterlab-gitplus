@@ -23,7 +23,7 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated! - v50');
+  console.log('JupyterLab extension @reviewnb/gitplus is activated!');
   const createPRCommand = 'create-pr';
   app.commands.addCommand(createPRCommand, {
     label: 'Create Pull Request',
@@ -165,7 +165,6 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   }
 
   function show_pr_created_dialog(github_url: string, reviewnb_url: string) {
-    console.log(`${github_url} --show_pr_created_dialog-- ${reviewnb_url}`);
     const prcwidget = new PRCreated(github_url, reviewnb_url);
 
     showDialog({
@@ -184,7 +183,6 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   }
 
   function show_commit_pushed_dialog(github_url: string, reviewnb_url: string) {
-    console.log(`${github_url} --show_commit_pushed_dialog-- ${reviewnb_url}`);
     const prcwidget = new CommitPushed(github_url, reviewnb_url);
 
     showDialog({
