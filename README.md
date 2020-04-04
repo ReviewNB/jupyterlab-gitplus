@@ -1,11 +1,16 @@
 # GitPlus
 
-JupyterLab extension to create GitHub pull requests.
+Create GitHub pull requests & push commits directly from JupyterLab.
 
+## Demo
+
+### Create GitHub Pull Request from JupyterLab
+
+[![Create GitHub Pull Request from JupyterLab](https://i.ytimg.com/vi/yuvLgIjCq48/maxresdefault.jpg)](https://www.youtube.com/watch?v=yuvLgIjCq48)
 
 ## Requirements
 
-* JupyterLab >= 1.0
+* JupyterLab >= 2.0
 
 ## Install
 
