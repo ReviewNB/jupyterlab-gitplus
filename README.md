@@ -47,7 +47,7 @@ c.GitPlus.github_token = '<your-github-access-token>'
 
 
 
-## Contributing
+## Development
 
 ### Install
 
@@ -68,10 +68,6 @@ jlpm watch
 # If you make any changes to server side extension (.py files) then reinstall it from source
 pip install .
 ```
-
-### Uninstall
-
-```bash
-jupyter labextension uninstall @reviewnb/gitplus
-```
+## Contributing
+If you see any problem, open an issue or send a pull request. You can write to support@reviewnb.com for any questions.
 
