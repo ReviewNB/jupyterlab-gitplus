@@ -45,6 +45,7 @@ Here's [GitHub's guide](https://help.github.com/en/github/authenticating-to-gith
 c.GitPlus.github_token = '<your-github-access-token>'
 ```
 
+After installation, start JupyterLab normally & you should see "Git-Plus" as a new menu item.
 
 
 ## Development
