@@ -39,7 +39,7 @@ pip install jupyterlab_gitplus
 Here's [GitHub's guide](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to generate personal access token. Briefly speaking,
 
 - Head over [developer settings on GitHub](https://github.com/settings/tokens). Click "Generate New Token".
-- Select Repo scope. Click "Generate Token". Copy the generate access token.
+- Select Repo scope. Click "Generate Token". Copy the generated token.
 - Open you Jupyter config file `~/.jupyter/jupyter_notebook_config.py` & paste the token as below
 ```bash
 c.GitPlus.github_token = '<your-github-access-token>'
