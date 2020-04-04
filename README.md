@@ -28,8 +28,21 @@ In future it will,
 ## Install
 
 ```bash
+# install npm package for client side extension (UI)
 jupyter labextension install @reviewnb/jupyterlab_gitplus
+# install pypi package for server side extension
+pip install jupyterlab_gitplus
 ```
+
+### Setup GitHub token
+- Head over [developer settings on GitHub](https://github.com/settings/tokens). Click "Generate New Token".
+- Select Repo scope. Click "Generate Token". Copy the generate access token.
+- Open you Jupyter config file `~/.jupyter/jupyter_notebook_config.py` & paste the token as below
+```bash
+c.GitPlus.github_token = '<your-github-access-token>'
+```
+
+If the above steps are too brief for you, here's [GitHub's guide](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to generate personal access token.
 
 ## Contributing
 
@@ -40,27 +53,17 @@ The `jlpm` command is JupyterLab's pinned version of
 `yarn` or `npm` in lieu of `jlpm` below.
 
 ```bash
-# Clone the repo to your local environment
-# Move to @reviewnb/gitplus directory
-# Install dependencies
-jlpm
-# Build Typescript source
-jlpm build
+# Clone the repo to your local environment & install dependencies
+
 # Link your development version of the extension with JupyterLab
 jupyter labextension link .
-# Rebuild Typescript source after making changes
-jlpm build
-# Rebuild JupyterLab after making any changes
-jupyter lab build
-```
-
-You can watch the source directory and run JupyterLab in watch mode to watch for changes in the extension's source and automatically rebuild the extension and application.
-
-```bash
-# Watch the source directory in another terminal tab
-jlpm watch
 # Run jupyterlab in watch mode in one terminal tab
 jupyter lab --watch
+# Watch the GitPlus source directory in another terminal tab
+jlpm watch
+
+# If you make any changes to server side extension (.py files) then reinstall it from source
+pip install .
 ```
 
 ### Uninstall
