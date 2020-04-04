@@ -1,6 +1,15 @@
 # GitPlus
 
-Create GitHub pull requests & push commits directly from JupyterLab.
+GitPlus is a JupyterLab plugin for version control of Jupyter notebooks. It can,
+
+- Create GitHub pull request from JupyterLab 
+- Create & push commits to GitHub from JupyterLab 
+
+In future it will,
+
+- Pull changes from GitHub
+- Let you resolve merge conflicts for Jupyter notebooks (without messing with underlying JSON)
+- Let you switch/create branches locally
 
 ## Demo
 
