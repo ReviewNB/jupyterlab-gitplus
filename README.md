@@ -30,11 +30,14 @@ In future it will,
 ```bash
 # install npm package for client side extension (UI)
 jupyter labextension install @reviewnb/jupyterlab_gitplus
+
 # install pypi package for server side extension
 pip install jupyterlab_gitplus
 ```
 
 ### Setup GitHub token
+Here's [GitHub's guide](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to generate personal access token. Briefly speaking,
+
 - Head over [developer settings on GitHub](https://github.com/settings/tokens). Click "Generate New Token".
 - Select Repo scope. Click "Generate Token". Copy the generate access token.
 - Open you Jupyter config file `~/.jupyter/jupyter_notebook_config.py` & paste the token as below
@@ -42,7 +45,7 @@ pip install jupyterlab_gitplus
 c.GitPlus.github_token = '<your-github-access-token>'
 ```
 
-If the above steps are too brief for you, here's [GitHub's guide](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to generate personal access token.
+
 
 ## Contributing
 
