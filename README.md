@@ -6,7 +6,7 @@ Create GitHub pull requests & push commits directly from JupyterLab.
 
 ### Create GitHub Pull Request from JupyterLab
 
-<iframe width="560" height="315" src="https://www.youtube.com/embed/yuvLgIjCq48" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+[![Create GitHub Pull Request from JupyterLab](https://i.ytimg.com/vi/yuvLgIjCq48/maxresdefault.jpg)](https://www.youtube.com/watch?v=yuvLgIjCq48)
 
 ## Requirements
 
