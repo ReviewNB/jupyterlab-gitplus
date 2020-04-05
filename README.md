@@ -5,13 +5,6 @@ A JupyterLab plugin for version control of Jupyter notebooks. It can,
 - Create & push commits to GitHub from JupyterLab
 - Create GitHub pull request from JupyterLab
 
-
-In future it will,
-
-- Pull changes from GitHub
-- Let you switch/create branches locally
-- Let you resolve merge conflicts for Jupyter notebooks (without messing with underlying JSON)
-
 ## Demo
 
 ### Create GitHub Pull Request from JupyterLab
