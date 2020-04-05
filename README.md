@@ -63,6 +63,13 @@ jlpm watch
 # If you make any changes to server side extension (.py files) then reinstall it from source
 pip install .
 ```
+
+## Motivation
+Our aim is to make notebooks a first class entity in Data science & ML teams. We can achieve this by making notebooks play well with existing tools & processes instead of building expensive proprietary platforms. Other projects in this direction are,
+
+- [ReviewNB](https://www.reviewnb.com/) - Code review tool for Jupyter notebooks
+- [treon](https://github.com/reviewnb/treon) - Easy to use test framework for Jupyter notebooks
+
 ## Contributing
 If you see any problem, open an issue or send a pull request. You can write to support@reviewnb.com for any questions.
 
