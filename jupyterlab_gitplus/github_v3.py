@@ -2,7 +2,13 @@ import json
 from .requests import retriable_requests
 
 
+import traceback
+import logging
+logger = logging.getLogger(__name__)
+
+
 GITHUB_REST_ENDPOINT = 'https://api.github.com/'
+
 
 def create_pull_request(owner_login, repo_name, title, head, base, access_token):
     content = {}
@@ -26,6 +32,9 @@ def create_pull_request(owner_login, repo_name, title, head, base, access_token)
         }
         return result
     except Exception as ex:
+        logger.error('Request payload: ' + str(data))
+        logger.error('API Response: ' + str(content))
+        logger.error(traceback.format_exc())
         raise(ex)
 
 
@@ -45,10 +54,18 @@ def get_repository_details_for_pr(owner_login, repo_name, access_token, new_bran
 
 
 def get_repository(owner_login, repo_name, access_token):
+    content = {}
     url = GITHUB_REST_ENDPOINT + 'repos/' + owner_login + '/' + repo_name
     headers = {
         'Authorization': 'token ' + access_token
     }
-    response = retriable_requests().get(url, headers=headers)
-    response.raise_for_status()
-    return json.loads(response.content)
+    try:
+        response = retriable_requests().get(url, headers=headers)
+        content = json.loads(response.content)
+        response.raise_for_status()
+        return content
+    except Exception as ex:
+        logger.error('get_repository url: ' + str(url))
+        logger.error('get_repository API Response: ' + str(content))
+        logger.error(traceback.format_exc())
+        raise(ex)

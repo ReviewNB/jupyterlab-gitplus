@@ -4,4 +4,4 @@ def _jupyter_server_extension_paths():
     }]
 
 
-__version__ = "0.1.8"
+__version__ = "0.1.9"
