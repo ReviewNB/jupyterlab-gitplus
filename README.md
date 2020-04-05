@@ -1,9 +1,10 @@
 # GitPlus
 
-GitPlus is a JupyterLab plugin for version control of Jupyter notebooks. It can,
+A JupyterLab plugin for version control of Jupyter notebooks. It can,
 
-- Create GitHub pull request from JupyterLab
 - Create & push commits to GitHub from JupyterLab
+- Create GitHub pull request from JupyterLab
+
 
 In future it will,
 
@@ -28,11 +29,9 @@ In future it will,
 ## Install
 
 ```bash
-# install npm package for client side extension (UI)
-jupyter labextension install @reviewnb/jupyterlab_gitplus
-
-# install pypi package for server side extension
 pip install jupyterlab_gitplus
+jupyter labextension install @reviewnb/jupyterlab_gitplus
+jupyter serverextension enable --py jupyterlab_gitplus
 ```
 
 ### Setup GitHub token
