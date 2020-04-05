@@ -23,7 +23,7 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus is activated!');
+  console.log('JupyterLab extension @reviewnb/gitplus (0.1.0) is activated!');
   const createPRCommand = 'create-pr';
   app.commands.addCommand(createPRCommand, {
     label: 'Create Pull Request',
@@ -47,7 +47,7 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   function show_repository_selection_failure_dialog() {
     showDialog({
       title: 'Failure',
-      body: 'Failed to fetch list of repositories. Have you installed & enabled server side of the extension? Check Jupyter logs for error. \n\n If unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+      body: 'Failed to fetch list of repositories. Have you installed & enabled server side of the extension? Check Jupyter logs for error. \n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
       buttons: [
         Dialog.okButton({ label: "Okay" })
       ]
@@ -178,7 +178,7 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
     if (github_url.length == 0 || reviewnb_url.length == 0) {
       showDialog({
         title: 'Failure',
-        body: 'Failed to create pull request. Check Jupyter logs for error. \n\n If unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+        body: 'Failed to create pull request. Check Jupyter logs for error. \n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
         buttons: [
           Dialog.okButton({ label: "Okay" })
         ]
@@ -203,7 +203,7 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
     if (github_url.length == 0 || reviewnb_url.length == 0) {
       showDialog({
         title: 'Failure',
-        body: 'Failed to create/push commit. Check Jupyter logs for error. \n\n If unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+        body: 'Failed to create/push commit. Check Jupyter logs for error. \n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
         buttons: [
           Dialog.okButton({ label: "Okay" })
         ]
@@ -226,23 +226,23 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
       });
 
     }
+  }
+  // Create new top level menu
+  const menu = new Menu({ commands: app.commands });
+  menu.title.label = 'Git-Plus';
+  mainMenu.addMenu(menu, { rank: 40 });
 
-    // Create new top level menu
-    const menu = new Menu({ commands: app.commands });
-    menu.title.label = 'Git-Plus';
-    mainMenu.addMenu(menu, { rank: 40 });
+  // Add commands to menu
+  menu.addItem({
+    command: createPRCommand,
+    args: {},
+  });
+  menu.addItem({
+    command: pushCommitCommand,
+    args: {},
+  });
+};
 
-    // Add commands to menu
-    menu.addItem({
-      command: createPRCommand,
-      args: {},
-    });
-    menu.addItem({
-      command: pushCommitCommand,
-      args: {},
-    });
-  };
-}
 export function show_spinner() {
   const spinWidget = new SpinnerDialog();
   showDialog({

@@ -17,3 +17,8 @@
     min-height: 3em;
     font-size: 14px;
 }
+
+.jp-Dialog-body {
+    /* For newlines in error message to be visible */
+    white-space: pre-wrap;
+}
