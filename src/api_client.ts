@@ -8,7 +8,7 @@ export const HTTP = axios.create({
 });
 
 
-export function get_modified_repositories(data: {}, show_repository_selection_dialog: Function, command: string) {
+export function get_modified_repositories(data: {}, show_repository_selection_dialog: Function, command: string, show_repository_selection_failure_dialog: Function) {
     let repo_names: string[][] = []
     return HTTP.post("gitplus/modified_repo", data)
         .then(function (response) {
@@ -20,6 +20,7 @@ export function get_modified_repositories(data: {}, show_repository_selection_di
             show_repository_selection_dialog(repo_names, command);
         })
         .catch(function (error) {
+            show_repository_selection_failure_dialog()
             console.log(error)
         });
 }
@@ -37,6 +38,8 @@ export function create_pull_request(data: {}, show_pr_created_dialog: Function) 
         })
         .catch(function (error) {
             console.log(error)
+            Dialog.flush(); // remove spinner
+            show_pr_created_dialog()
         });
 }
 
@@ -53,5 +56,7 @@ export function create_and_push_commit(data: {}, show_commit_pushed_dialog: Func
         })
         .catch(function (error) {
             console.log(error)
+            Dialog.flush(); // remove spinner
+            show_commit_pushed_dialog()
         });
 }

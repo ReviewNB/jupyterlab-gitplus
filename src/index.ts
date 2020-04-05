@@ -30,7 +30,7 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
     execute: () => {
       const files = get_open_files(editorTracker, notebookTracker);
       const data = get_json_request_payload_from_file_list(files);
-      get_modified_repositories(data, show_repository_selection_dialog, createPRCommand);
+      get_modified_repositories(data, show_repository_selection_dialog, createPRCommand, show_repository_selection_failure_dialog);
     }
   });
 
@@ -40,10 +40,20 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
     execute: () => {
       const files = get_open_files(editorTracker, notebookTracker);
       const data = get_json_request_payload_from_file_list(files);
-      get_modified_repositories(data, show_repository_selection_dialog, pushCommitCommand);
+      get_modified_repositories(data, show_repository_selection_dialog, pushCommitCommand, show_repository_selection_failure_dialog);
     }
   });
 
+  function show_repository_selection_failure_dialog() {
+    showDialog({
+      title: 'Failure',
+      body: 'Failed to fetch list of repositories. Have you installed & enabled server side of the extension? Check Jupyter logs for error. \n\n If unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+      buttons: [
+        Dialog.okButton({ label: "Okay" })
+      ]
+    }).then(result => {
+    });
+  }
 
   function show_repository_selection_dialog(repo_names: string[][], command: string) {
     let label_style = {
@@ -164,58 +174,75 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
     });
   }
 
-  function show_pr_created_dialog(github_url: string, reviewnb_url: string) {
-    const prcwidget = new PRCreated(github_url, reviewnb_url);
+  function show_pr_created_dialog(github_url: string = '', reviewnb_url: string = '') {
+    if (github_url.length == 0 || reviewnb_url.length == 0) {
+      showDialog({
+        title: 'Failure',
+        body: 'Failed to create pull request. Check Jupyter logs for error. \n\n If unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+        buttons: [
+          Dialog.okButton({ label: "Okay" })
+        ]
+      }).then(result => {
+      });
+    } else {
+      const prcwidget = new PRCreated(github_url, reviewnb_url);
 
-    showDialog({
-      title: "Pull Request Created",
-      body: prcwidget,
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.okButton({ label: "Okay" })
-      ]
-    }).then(result => {
-      if (!result.button.accept) {
-        return;
-      }
-    });
-
+      showDialog({
+        title: "Pull Request Created",
+        body: prcwidget,
+        buttons: [
+          Dialog.cancelButton(),
+          Dialog.okButton({ label: "Okay" })
+        ]
+      }).then(result => {
+      });
+    }
   }
 
-  function show_commit_pushed_dialog(github_url: string, reviewnb_url: string) {
-    const prcwidget = new CommitPushed(github_url, reviewnb_url);
+  function show_commit_pushed_dialog(github_url: string = '', reviewnb_url: string = '') {
+    if (github_url.length == 0 || reviewnb_url.length == 0) {
+      showDialog({
+        title: 'Failure',
+        body: 'Failed to create/push commit. Check Jupyter logs for error. \n\n If unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+        buttons: [
+          Dialog.okButton({ label: "Okay" })
+        ]
+      }).then(result => {
+      });
+    } else {
+      const prcwidget = new CommitPushed(github_url, reviewnb_url);
 
-    showDialog({
-      title: "Commit pushed!",
-      body: prcwidget,
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.okButton({ label: "Okay" })
-      ]
-    }).then(result => {
-      if (!result.button.accept) {
-        return;
-      }
+      showDialog({
+        title: "Commit pushed!",
+        body: prcwidget,
+        buttons: [
+          Dialog.cancelButton(),
+          Dialog.okButton({ label: "Okay" })
+        ]
+      }).then(result => {
+        if (!result.button.accept) {
+          return;
+        }
+      });
+
+    }
+
+    // Create new top level menu
+    const menu = new Menu({ commands: app.commands });
+    menu.title.label = 'Git-Plus';
+    mainMenu.addMenu(menu, { rank: 40 });
+
+    // Add commands to menu
+    menu.addItem({
+      command: createPRCommand,
+      args: {},
     });
-
-  }
-
-  // Create new top level menu
-  const menu = new Menu({ commands: app.commands });
-  menu.title.label = 'Git-Plus';
-  mainMenu.addMenu(menu, { rank: 40 });
-
-  // Add commands to menu
-  menu.addItem({
-    command: createPRCommand,
-    args: {},
-  });
-  menu.addItem({
-    command: pushCommitCommand,
-    args: {},
-  });
-};
-
+    menu.addItem({
+      command: pushCommitCommand,
+      args: {},
+    });
+  };
+}
 export function show_spinner() {
   const spinWidget = new SpinnerDialog();
   showDialog({
