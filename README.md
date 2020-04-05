@@ -53,8 +53,10 @@ The `jlpm` command is JupyterLab's pinned version of
 
 # Link your development version of the extension with JupyterLab
 jupyter labextension link .
+
 # Run jupyterlab in watch mode in one terminal tab
 jupyter lab --watch
+
 # Watch the GitPlus source directory in another terminal tab
 jlpm watch
 
