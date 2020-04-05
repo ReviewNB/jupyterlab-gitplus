@@ -47,8 +47,9 @@ After installation, start JupyterLab normally & you should see "Git-Plus" as a n
 
 <details> 
   <summary>Which is the `base` branch used in a pull request?</summary>
-  `base` branch in a PR is a branch against which your changes are compared and ultimately merged. We use repository's default    branch (usually called 'master') as `base` branch of PR. We use parent repository's default branch as `base` in case of forked repo.  
-</details>
+  <p>
+  `base` branch in a PR is a branch against which your changes are compared and ultimately merged. We use repository's default    branch (usually called 'master') as `base` branch of PR. We use parent repository's default branch as `base` in case of forked repo.
+  </p></details>
 
 <details> 
   <summary>Which is the `head` branch used in a pull request?</summary>
