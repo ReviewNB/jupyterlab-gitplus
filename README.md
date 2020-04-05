@@ -39,6 +39,36 @@ c.GitPlus.github_token = '<your-github-access-token>'
 
 After installation, start JupyterLab normally & you should see "Git-Plus" as a new menu item.
 
+## FAQ
+<details> 
+  <summary>Where is pull request (PR) opened in case of forked repositories?</summary>
+  If your repository is forked from another repository (parent) then PR will be created on parent repository. 
+</details>
+
+<details> 
+  <summary>Which is the `base` branch used in a pull request?</summary>
+  `base` branch in a PR is a branch against which your changes are compared and ultimately merged. We use repository's default    branch (usually called 'master') as `base` branch of PR. We use parent repository's default branch as `base` in case of forked repo.  
+</details>
+
+<details> 
+  <summary>Which is the `head` branch used in a pull request?</summary>
+  `head` branch in a PR is a branch which contains the latest changes you've made. We create a new branch (e.g. `gitplus-xyz123`) as `head` branch. It only contains changes from the files you wish to include in the PR.  
+</details>
+
+<details> 
+  <summary>How can I edit a pull request opened with GitPlus?</summary>
+  You can head over to GitHub and edit the PR metadata (title, comments) to your liking. For pushing additional file changes to the same PR, 1) copy the branch name from GitHub UI (of the form `gitplus-xyz123`) 2) Checkout that branch locally, 3) Make the changes you want, 4) Use push commit functionality from GitPlus
+</details>
+
+<details> 
+  <summary>Is GitPlus tied to ReviewNB in any way?</summary>
+  No. GitPlus is it's own open source project. The only connection with ReviewNB is that at the end of PR/Commit creation, GitPlus shows ReviewNB URL along with GitHub URL. It's because users can see [visual notebook diffs](https://uploads-ssl.webflow.com/5ba4ebe021cb91ae35dbf88c/5ba93ded243329a486dab26e_sl-code%2Bimage.png) on ReviewNB instead of hard to read [JSON diffs](https://uploads-ssl.webflow.com/5ba4ebe021cb91ae35dbf88c/5c24ba833c78e57d6b8c9d09_Screenshot%202018-12-27%20at%204.43.09%20PM.png) on GitHub. [ReviewNB](https://www.reviewnb.com/) also facilitates discussion on notebooks cells.
+</details>
+
+<details> 
+  <summary>What if I don't have a ReviewNB account?</summary>
+  No problem, everything in GitPlus will still work fine. Only the ReviewNB URLs won't work for you.
+</details>
 
 ## Development
 
