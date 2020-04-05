@@ -51,7 +51,7 @@ After installation, start JupyterLab normally & you should see "Git-Plus" as a n
   <summary> Which is the <tt>base</tt> branch used in a pull request? </summary>
   <p>
   
-  `base` branch in a PR is a branch against which your changes are compared and ultimately merged. We use repository's default    branch (usually called 'master') as `base` branch of PR. We use parent repository's default branch as `base` in case of forked repo. 
+  `base` branch in a PR is a branch against which your changes are compared and ultimately merged. We use repository's default    branch (usually called `master`) as `base` branch of PR. We use parent repository's default branch as `base` in case of forked repo. 
 </p></details>
 
 <details> 
@@ -65,14 +65,20 @@ After installation, start JupyterLab normally & you should see "Git-Plus" as a n
   <summary>How can I edit a pull request opened with GitPlus?</summary>
   <p>
 
-You can head over to GitHub and edit the PR metadata (title, comments) to your liking. For pushing additional file changes to the same PR, 1) copy the branch name from GitHub UI (of the form `gitplus-xyz123`) 2) Checkout that branch locally, 3) Make the changes you want, 4) Use push commit functionality from GitPlus
+You can head over to GitHub and edit the PR metadata to your liking. For pushing additional file changes to the same PR, 
+1. Copy the branch name from GitHub UI (e.g. `gitplus-xyz123`) 
+2. Checkout that branch locally
+3. Make the file changes you want
+4. Use push commit functionality from GitPlus to push new changes
 </p></details>
 
 <details> 
   <summary>Is GitPlus tied to ReviewNB in any way?</summary>
   <p>
     
-  No. GitPlus is it's own open source project. The only connection with ReviewNB is that at the end of PR/Commit creation, GitPlus shows ReviewNB URL along with GitHub URL. It's because users can see [visual notebook diffs](https://uploads-ssl.webflow.com/5ba4ebe021cb91ae35dbf88c/5ba93ded243329a486dab26e_sl-code%2Bimage.png) on ReviewNB instead of hard to read [JSON diffs](https://uploads-ssl.webflow.com/5ba4ebe021cb91ae35dbf88c/5c24ba833c78e57d6b8c9d09_Screenshot%202018-12-27%20at%204.43.09%20PM.png) on GitHub. [ReviewNB](https://www.reviewnb.com/) also facilitates discussion on notebooks cells.
+  No. GitPlus is it's own open source project. The only connection with ReviewNB is that at the end of PR/Commit creation, GitPlus shows ReviewNB URL along with GitHub URL. You can safely ignore these URLs if you don't want to use ReviewNB.
+  
+  It's is useful to see [visual notebook diffs](https://uploads-ssl.webflow.com/5ba4ebe021cb91ae35dbf88c/5ba93ded243329a486dab26e_sl-code%2Bimage.png) on ReviewNB instead of hard to read [JSON diffs](https://uploads-ssl.webflow.com/5ba4ebe021cb91ae35dbf88c/5c24ba833c78e57d6b8c9d09_Screenshot%202018-12-27%20at%204.43.09%20PM.png) on GitHub. [ReviewNB](https://www.reviewnb.com/) also facilitates discussion on notebooks cells.
 </p></details>
 
 <details> 
