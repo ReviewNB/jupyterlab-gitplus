@@ -9,8 +9,8 @@ A JupyterLab plugin for version control of Jupyter notebooks. It can,
 In future it will,
 
 - Pull changes from GitHub
-- Let you resolve merge conflicts for Jupyter notebooks (without messing with underlying JSON)
 - Let you switch/create branches locally
+- Let you resolve merge conflicts for Jupyter notebooks (without messing with underlying JSON)
 
 ## Demo
 
