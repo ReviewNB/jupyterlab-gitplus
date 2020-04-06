@@ -30,6 +30,9 @@ setup(
     keywords=['github', 'jupyter', 'notebook', 'pull request', 'version control', 'git'],
     install_requires=[
         'jupyterlab',
-        'gitpython'
+        'gitpython',
+        'requests',
+        'json',
+        'urllib3',
     ]
 )
