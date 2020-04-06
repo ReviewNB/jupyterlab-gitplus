@@ -56,38 +56,54 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   }
 
   function show_repository_selection_dialog(repo_names: string[][], command: string) {
-    let label_style = {
-      'font-size': '14px'
-    }
-    let body_style = {
-      'padding-top': '2em',
-      'padding-bottom': '2em',
-      'border-top': '1px solid #dfe2e5'
-    }
-    let select_style = {
-      'margin-top': '4px',
-      'min-height': '32px'
-    }
-    let styles = {
-      'label_style': label_style,
-      'body_style': body_style,
-      'select_style': select_style
-    }
-    const dwidget = new DropDown(repo_names, 'Select Repository', styles);
-    showDialog({
-      title: "Repository Selection",
-      body: dwidget,
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.okButton({ label: "Next" })
-      ]
-    }).then(result => {
-      if (!result.button.accept) {
-        return;
+    if (repo_names.length == 0) {
+      let msg = "No GitHub repositories found! \n\nFirst, open the files that you'd like to commit or create pull request for.";
+      if (command == createPRCommand) {
+        msg = "No GitHub repositories found! \n\nFirst, open the files that you'd like to create pull request for.";
+      } else if (command == pushCommitCommand) {
+        msg = "No GitHub repositories found! \n\nFirst, open the files that you'd like to commit.";
       }
-      let repo_name = dwidget.getTo();
-      show_file_selection_dialog(repo_name, command);
-    });
+      showDialog({
+        title: 'Repository Selection',
+        body: msg,
+        buttons: [
+          Dialog.okButton({ label: "Okay" })
+        ]
+      }).then(result => { });
+    } else {
+      let label_style = {
+        'font-size': '14px'
+      }
+      let body_style = {
+        'padding-top': '2em',
+        'padding-bottom': '2em',
+        'border-top': '1px solid #dfe2e5'
+      }
+      let select_style = {
+        'margin-top': '4px',
+        'min-height': '32px'
+      }
+      let styles = {
+        'label_style': label_style,
+        'body_style': body_style,
+        'select_style': select_style
+      }
+      const dwidget = new DropDown(repo_names, 'Select Repository', styles);
+      showDialog({
+        title: "Repository Selection",
+        body: dwidget,
+        buttons: [
+          Dialog.cancelButton(),
+          Dialog.okButton({ label: "Next" })
+        ]
+      }).then(result => {
+        if (!result.button.accept) {
+          return;
+        }
+        let repo_name = dwidget.getTo();
+        show_file_selection_dialog(repo_name, command);
+      });
+    }
   }
 
   function show_file_selection_dialog(repo_path: string, command: string) {

@@ -36,13 +36,15 @@ class ModifiedRepositoryListHandler(IPythonHandler):
                 try:
                     repo = Repo(file['path'], search_parent_directories=True)
 
-                    if repo.working_dir not in unique_paths:
+                    if GITHUB_ENDPOINT not in repo.remotes.origin.url:
+                        logger.info('File is not a part of GitHub repository: ' + file['path'])
+                    elif repo.working_dir not in unique_paths:
                         unique_paths.add(repo.working_dir)
                         repositories.append(repo)
                 except git.exc.NoSuchPathError:
-                    print('File not found: ' + file['path'])
+                    logger.info('File not found: ' + file['path'])
                 except git.exc.InvalidGitRepositoryError:
-                    print('File is not under Git repository: ' + file['path'])
+                    logger.info('File is not under Git repository: ' + file['path'])
 
             for repo in repositories:
                 path = repo.working_dir
