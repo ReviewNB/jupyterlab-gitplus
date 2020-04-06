@@ -96,6 +96,20 @@ You can head over to GitHub and edit the PR metadata to your liking. For pushing
   No, currently we only support repositories on GitHub.
 <p></details>
 
+## Motivation
+Our aim is to make notebooks a first class entity in Data science & ML teams. We can achieve this by making notebooks play well with existing tools & processes instead of building expensive proprietary platforms. Other projects in this direction are,
+
+- [ReviewNB](https://www.reviewnb.com/) - Code review tool for Jupyter notebooks
+- [treon](https://github.com/reviewnb/treon) - Easy to use test framework for Jupyter notebooks
+
+## Roadmap
+In future GitPlus will be able to,
+
+- Pull changes from GitHub
+- Let you switch/create branches locally
+- Let you resolve notebook merge conflicts at a cell level (without messing with underlying JSON)
+
+
 ## Development
 
 ### Install
@@ -119,12 +133,6 @@ jlpm watch
 # If you make any changes to server side extension (.py files) then reinstall it from source
 pip install .
 ```
-
-## Motivation
-Our aim is to make notebooks a first class entity in Data science & ML teams. We can achieve this by making notebooks play well with existing tools & processes instead of building expensive proprietary platforms. Other projects in this direction are,
-
-- [ReviewNB](https://www.reviewnb.com/) - Code review tool for Jupyter notebooks
-- [treon](https://github.com/reviewnb/treon) - Easy to use test framework for Jupyter notebooks
 
 ## Contributing
 If you see any problem, open an issue or send a pull request. You can write to support@reviewnb.com for any questions.
