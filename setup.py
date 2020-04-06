@@ -32,7 +32,6 @@ setup(
         'jupyterlab',
         'gitpython',
         'requests',
-        'json',
-        'urllib3',
+        'urllib3'
     ]
 )
