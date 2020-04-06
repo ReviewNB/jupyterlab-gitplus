@@ -1,5 +1,5 @@
 import { JupyterFrontEnd, JupyterFrontEndPlugin } from '@jupyterlab/application';
-import { Dialog, showDialog } from "@jupyterlab/apputils";
+import { Dialog, showDialog, showErrorMessage } from "@jupyterlab/apputils";
 import { IEditorTracker } from "@jupyterlab/fileeditor";
 import { INotebookTracker } from "@jupyterlab/notebook";
 import { IMainMenu } from '@jupyterlab/mainmenu';
@@ -45,14 +45,10 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   });
 
   function show_repository_selection_failure_dialog() {
-    showDialog({
-      title: 'Failure',
-      body: 'Failed to fetch list of repositories. Have you installed & enabled server side of the extension? Check Jupyter logs for error. \n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
-      buttons: [
-        Dialog.okButton({ label: "Okay" })
-      ]
-    }).then(result => {
-    });
+    showErrorMessage(
+      'Failure',
+      'Failed to fetch list of repositories. Have you installed & enabled server side of the extension? \n\nSee installation steps here - https://github.com/ReviewNB/jupyterlab-gitplus/blob/master/README.md#install\n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+    )
   }
 
   function show_repository_selection_dialog(repo_names: string[][], command: string) {
