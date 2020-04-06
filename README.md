@@ -88,6 +88,14 @@ You can head over to GitHub and edit the PR metadata to your liking. For pushing
   No problem, everything in GitPlus will still work fine. Only the ReviewNB URLs won't work for you.
 <p></details>
 
+
+<details> 
+  <summary>Can we use GitPlus with Gitlab/BitBucket or any other platforms?</summary>
+  <p>
+    
+  No, currently we only support repositories on GitHub.
+<p></details>
+
 ## Development
 
 ### Install
