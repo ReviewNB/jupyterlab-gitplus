@@ -8,6 +8,17 @@ export const HTTP = axios.create({
 });
 
 
+export function get_server_config() {
+    return HTTP.get("gitplus/expanded_server_root")
+        .then(function (response) {
+            return response.data;
+        })
+        .catch(function (error) {
+            console.log(error)
+        });
+}
+
+
 export function get_modified_repositories(data: {}, show_repository_selection_dialog: Function, command: string, show_repository_selection_failure_dialog: Function) {
     let repo_names: string[][] = []
     return HTTP.post("gitplus/modified_repo", data)

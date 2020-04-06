@@ -5,8 +5,7 @@ import { INotebookTracker } from "@jupyterlab/notebook";
 import { IMainMenu } from '@jupyterlab/mainmenu';
 import { Menu } from '@lumino/widgets';
 import { get_json_request_payload_from_file_list } from './utility';
-import { get_modified_repositories, create_pull_request, create_and_push_commit } from './api_client';
-import { PageConfig } from "@jupyterlab/coreutils";
+import { get_modified_repositories, create_pull_request, create_and_push_commit, get_server_config } from './api_client';
 import { CheckBoxes, DropDown, CommitPRMessageDialog, CommitMessageDialog, PRCreated, CommitPushed, SpinnerDialog } from './ui_elements';
 
 /**
@@ -28,9 +27,16 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   app.commands.addCommand(createPRCommand, {
     label: 'Create Pull Request',
     execute: () => {
-      const files = get_open_files(editorTracker, notebookTracker);
-      const data = get_json_request_payload_from_file_list(files);
-      get_modified_repositories(data, show_repository_selection_dialog, createPRCommand, show_repository_selection_failure_dialog);
+      get_server_config()
+        .then(function (config) {
+          const files = get_open_files(editorTracker, notebookTracker, config['server_root_dir']);
+          const data = get_json_request_payload_from_file_list(files);
+          get_modified_repositories(data, show_repository_selection_dialog, createPRCommand, show_repository_selection_failure_dialog);
+        })
+        .catch(function (error) {
+          show_repository_selection_failure_dialog();
+          console.log(error);
+        });
     }
   });
 
@@ -38,18 +44,18 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   app.commands.addCommand(pushCommitCommand, {
     label: 'Push Commit',
     execute: () => {
-      const files = get_open_files(editorTracker, notebookTracker);
-      const data = get_json_request_payload_from_file_list(files);
-      get_modified_repositories(data, show_repository_selection_dialog, pushCommitCommand, show_repository_selection_failure_dialog);
+      get_server_config()
+        .then(function (config) {
+          const files = get_open_files(editorTracker, notebookTracker, config['server_root_dir']);
+          const data = get_json_request_payload_from_file_list(files);
+          get_modified_repositories(data, show_repository_selection_dialog, pushCommitCommand, show_repository_selection_failure_dialog);
+        })
+        .catch(function (error) {
+          show_repository_selection_failure_dialog();
+          console.log(error);
+        });
     }
   });
-
-  function show_repository_selection_failure_dialog() {
-    showErrorMessage(
-      'Failure',
-      'Failed to fetch list of repositories. Have you installed & enabled server side of the extension? \n\nSee installation steps here - https://github.com/ReviewNB/jupyterlab-gitplus/blob/master/README.md#install\n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
-    )
-  }
 
   function show_repository_selection_dialog(repo_names: string[][], command: string) {
     if (repo_names.length == 0) {
@@ -103,35 +109,42 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   }
 
   function show_file_selection_dialog(repo_path: string, command: string) {
-    const files = get_open_files(editorTracker, notebookTracker);
-    let relevant_files: string[] = []
+    get_server_config()
+      .then(function (config) {
+        const files = get_open_files(editorTracker, notebookTracker, config['server_root_dir']);
+        let relevant_files: string[] = []
 
-    for (const f of files) {
-      if (f.startsWith(repo_path)) {
-        relevant_files.push(f.substring(repo_path.length + 1))
-      }
-    }
+        for (const f of files) {
+          if (f.startsWith(repo_path)) {
+            relevant_files.push(f.substring(repo_path.length + 1))
+          }
+        }
 
-    const cwidget = new CheckBoxes(relevant_files);
-    showDialog({
-      title: "Select Files",
-      body: cwidget,
-      buttons: [
-        Dialog.cancelButton(),
-        Dialog.okButton({ label: "Next" })
-      ]
-    }).then(result => {
-      if (!result.button.accept) {
-        return;
-      }
-      let files = cwidget.getSelected();
+        const cwidget = new CheckBoxes(relevant_files);
+        showDialog({
+          title: "Select Files",
+          body: cwidget,
+          buttons: [
+            Dialog.cancelButton(),
+            Dialog.okButton({ label: "Next" })
+          ]
+        }).then(result => {
+          if (!result.button.accept) {
+            return;
+          }
+          let files = cwidget.getSelected();
 
-      if (command == createPRCommand) {
-        show_commit_pr_message_dialog(repo_path, files);
-      } else if (command == pushCommitCommand) {
-        show_commit_message_dialog(repo_path, files);
-      }
-    });
+          if (command == createPRCommand) {
+            show_commit_pr_message_dialog(repo_path, files);
+          } else if (command == pushCommitCommand) {
+            show_commit_message_dialog(repo_path, files);
+          }
+        });
+      })
+      .catch(function (error) {
+        show_file_selection_failure_dialog();
+        console.log(error);
+      });
   }
 
   function show_commit_message_dialog(repo_path: string, files: string[]) {
@@ -255,6 +268,20 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
   });
 };
 
+export function show_repository_selection_failure_dialog() {
+  showErrorMessage(
+    'Failure',
+    'Failed to fetch list of repositories. Have you installed & enabled server side of the extension? \n\nSee installation steps here - https://github.com/ReviewNB/jupyterlab-gitplus/blob/master/README.md#install\n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+  )
+}
+
+export function show_file_selection_failure_dialog() {
+  showErrorMessage(
+    'Failure',
+    'Failed to fetch list of modified files. Have you installed & enabled server side of the extension? \n\nSee installation steps here - https://github.com/ReviewNB/jupyterlab-gitplus/blob/master/README.md#install\n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+  )
+}
+
 export function show_spinner() {
   const spinWidget = new SpinnerDialog();
   showDialog({
@@ -267,9 +294,8 @@ export function show_spinner() {
   });
 }
 
-function get_open_files(editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
+function get_open_files(editorTracker: IEditorTracker, notebookTracker: INotebookTracker, base_dir: string) {
   let result: string[] = []
-  let base_dir = PageConfig.getOption('serverRoot');
 
   notebookTracker.forEach(notebook => {
     result.push(base_dir + '/' + notebook.context.path);
@@ -277,8 +303,9 @@ function get_open_files(editorTracker: IEditorTracker, notebookTracker: INoteboo
   editorTracker.forEach(editor => {
     result.push(base_dir + '/' + editor.context.path);
   });
-  return result;
 
+  return result;
 }
+
 
 export default gitPlusPlugin;

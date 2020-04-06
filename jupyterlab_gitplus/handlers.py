@@ -62,7 +62,7 @@ class ModifiedRepositoryListHandler(IPythonHandler):
 
 
 class PullRequestHandler(IPythonHandler):
-    def initialize(self, github_token=''):
+    def initialize(self, github_token, server_root_dir):
         self.github_token = github_token
 
     def post(self):
@@ -114,7 +114,7 @@ class PullRequestHandler(IPythonHandler):
 
 
 class CommitHandler(IPythonHandler):
-    def initialize(self, github_token=''):
+    def initialize(self, github_token, server_root_dir):
         self.github_token = github_token
 
     def post(self):
@@ -153,3 +153,22 @@ class CommitHandler(IPythonHandler):
             logger.error('/gitplus/commit request payload: ' + str(body))
             logger.error(traceback.format_exc())
             raise(ex)
+
+
+class ServerConfigHandler(IPythonHandler):
+    def initialize(self, github_token, server_root_dir):
+        self.server_root_dir = server_root_dir
+
+    def get(self):
+        '''
+        Returns following config,
+            1. server_root_dir: Expanded root directory of server
+                This can be read directly on client side with "PageConfig.getOption('serverRoot')" but that includes tilde (~). With this API we return tilde expanded absolute server root dir.
+        '''
+        if not self.server_root_dir:
+            raise RuntimeError('Could not read server_root_dir from Jupyter!')
+
+        result = {
+            'server_root_dir': os.path.expanduser(self.server_root_dir)
+        }
+        self.finish(json.dumps(result))
