@@ -22,7 +22,7 @@ A JupyterLab plugin for version control of Jupyter notebooks. It can,
 ## Install
 
 ```bash
-pip install jupyterlab_gitplus
+pip install --upgrade jupyterlab_gitplus
 jupyter labextension install @reviewnb/jupyterlab_gitplus
 jupyter serverextension enable --py jupyterlab_gitplus
 ```
