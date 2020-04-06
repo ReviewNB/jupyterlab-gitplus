@@ -106,8 +106,8 @@ Our aim is to make notebooks a first class entity in Data science & ML teams. We
 In future GitPlus will be able to,
 
 - Pull changes from GitHub
-- Let you switch/create branches locally
-- Let you resolve notebook merge conflicts at a cell level (without messing with underlying JSON)
+- Switch/create branches locally
+- Resolve notebook merge conflicts at a cell level (without messing with underlying JSON)
 
 
 ## Development
