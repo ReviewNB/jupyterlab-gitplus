@@ -190,7 +190,7 @@ function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEdi
     if (github_url.length == 0 || reviewnb_url.length == 0) {
       showDialog({
         title: 'Failure',
-        body: 'Failed to create pull request. Check Jupyter logs for error. \n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues',
+        body: "Failed to create pull request. Check Jupyter logs for error. \n\nMake sure you've correctly setup GitHub access token. Steps here - https://github.com/ReviewNB/jupyterlab-gitplus/blob/master/README.md#setup-github-token\n\nIf unable to resolve, open an issue here - https://github.com/ReviewNB/jupyterlab-gitplus/issues",
         buttons: [
           Dialog.okButton({ label: "Okay" })
         ]
