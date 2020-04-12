@@ -107,7 +107,7 @@ In future GitPlus will be able to,
 
 - Pull changes from GitHub
 - Switch/create branches locally
-- Resolve notebook merge conflicts at a cell level (without messing with underlying JSON)
+- Resolve notebook merge conflicts (without messing with underlying JSON)
 
 
 ## Development
