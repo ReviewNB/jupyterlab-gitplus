@@ -1,6 +1,6 @@
 {
   "name": "@reviewnb/jupyterlab_gitplus",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "JupyterLab extension to create GitHub pull requests & commits.",
   "keywords": [
     "jupyter",
