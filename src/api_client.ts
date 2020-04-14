@@ -7,6 +7,14 @@ export const HTTP = axios.create({
     baseURL: PageConfig.getBaseUrl()
 });
 
+HTTP.defaults.headers.post['X-CSRFToken'] = _get_cookie("_xsrf")
+
+function _get_cookie(name: string) {
+    // Source: https://blog.jupyter.org/security-release-jupyter-notebook-4-3-1-808e1f3bb5e2
+    var r = document.cookie.match("\\b" + name + "=([^;]*)\\b");
+    return r ? r[1] : undefined;
+}
+
 
 export function get_server_config() {
     return HTTP.get("gitplus/expanded_server_root")
@@ -17,7 +25,6 @@ export function get_server_config() {
             console.log(error)
         });
 }
-
 
 export function get_modified_repositories(data: {}, show_repository_selection_dialog: Function, command: string, show_repository_selection_failure_dialog: Function) {
     let repo_names: string[][] = []
