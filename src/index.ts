@@ -22,7 +22,7 @@ const gitPlusPlugin: JupyterFrontEndPlugin<void> = {
  * Activate the extension.
  */
 function activate(app: JupyterFrontEnd, mainMenu: IMainMenu, editorTracker: IEditorTracker, notebookTracker: INotebookTracker) {
-  console.log('JupyterLab extension @reviewnb/gitplus (0.1.2) is activated!');
+  console.log('JupyterLab extension @reviewnb/gitplus (0.1.3) is activated!');
   const createPRCommand = 'create-pr';
   app.commands.addCommand(createPRCommand, {
     label: 'Create Pull Request',
