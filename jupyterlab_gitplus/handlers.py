@@ -16,6 +16,7 @@ logger = logging.getLogger(__name__)
 
 
 GITHUB_ENDPOINT = 'https://github.com/'
+GITHUB_REMOTE_DOMAIN = 'github.com'
 REVIEWNB_ENDPOINT = 'https://app.reviewnb.com/'
 
 
@@ -36,7 +37,7 @@ class ModifiedRepositoryListHandler(IPythonHandler):
                 try:
                     repo = Repo(file['path'], search_parent_directories=True)
 
-                    if GITHUB_ENDPOINT not in repo.remotes.origin.url:
+                    if GITHUB_REMOTE_DOMAIN not in repo.remotes.origin.url:
                         logger.info('File is not a part of GitHub repository: ' + file['path'])
                     elif repo.working_dir not in unique_paths:
                         unique_paths.add(repo.working_dir)
