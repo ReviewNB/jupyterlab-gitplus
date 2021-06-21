@@ -74,7 +74,9 @@ export class DropDown extends Widget {
         options: string[][] = [],
         label: string = "",
         styles: {} = {}) {
-        let body_style, label_style, select_style = {};
+        let body_style = {};
+        let label_style = {};
+        let select_style = {};
 
         if ("body_style" in styles) {
             body_style = styles["body_style"];
@@ -150,6 +152,7 @@ export class CommitPRMessageDialog extends Widget {
                 return textarea.value;
             }
         }
+        return '';
     }
 
     public getPRTitle(): string {
@@ -159,6 +162,7 @@ export class CommitPRMessageDialog extends Widget {
                 return textarea.value;
             }
         }
+        return '';
     }
 }
 
@@ -180,6 +184,7 @@ export class CommitMessageDialog extends Widget {
                 return textarea.value;
             }
         }
+        return '';
     }
 }
 

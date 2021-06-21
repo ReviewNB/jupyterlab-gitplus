@@ -296,12 +296,16 @@ export function show_spinner() {
 
 function get_open_files(editorTracker: IEditorTracker, notebookTracker: INotebookTracker, base_dir: string) {
   let result: string[] = []
+  let separator: string = '/'
+  if (base_dir.includes('\\')) {
+    separator = '\\'
+  }
 
   notebookTracker.forEach(notebook => {
-    result.push(base_dir + '/' + notebook.context.path);
+    result.push(base_dir + separator + notebook.context.path);
   });
   editorTracker.forEach(editor => {
-    result.push(base_dir + '/' + editor.context.path);
+    result.push(base_dir + separator + editor.context.path);
   });
 
   return result;
