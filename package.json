@@ -15,8 +15,7 @@
   "author": "Amit Rathi",
   "files": [
     "lib/**/*.{d.ts,eot,gif,html,jpg,js,js.map,json,png,svg,woff2,ttf}",
-    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}",
-    "style/index.js"
+    "style/**/*.{css,eot,gif,html,jpg,json,png,svg,woff2,ttf}"
   ],
   "main": "lib/index.js",
   "types": "lib/index.d.ts",
@@ -50,6 +49,7 @@
     "@jupyterlab/fileeditor": "^3.0.11",
     "@jupyterlab/mainmenu": "^3.0.9",
     "@jupyterlab/notebook": "^3.0.11",
+    "@lumino/application": "1.8.4",
     "@lumino/disposable": "^1.4.3",
     "axios": "^0.19.2"
   },
@@ -73,6 +73,5 @@
   "jupyterlab": {
     "extension": true,
     "outputDir": "jupyterlab_gitplus/labextension"
-  },
-  "styleModule": "style/index.js"
+  }
 }
