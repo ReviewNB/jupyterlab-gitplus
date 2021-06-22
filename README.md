@@ -17,7 +17,9 @@ A JupyterLab plugin for version control of Jupyter notebooks. It can,
 
 ## Requirements
 
-* JupyterLab >= 2.0
+* JupyterLab 2.x & 3.x
+
+If you're on a Windows machine, please upgrade to JupyterLab 3.x as this extension might have some problems with JupyterLab 2.x on Windows.
 
 ## Install
 #### 1. Install Required Packages
