@@ -1,0 +1,38 @@
+/*
+SAME SETTINGS TO BE COPIED TO style/base.css
+
+JupyterLab 3.0 requires the custom CSS in base.css
+JupyterLab 2.0 requires the custom CSS in index.css
+*/
+
+
+.f1st5hdn svg {
+    /* To center down arrow on Select Repository DropDown */
+    top: 12px !important;
+}
+
+.gitPlusDialogBody {
+    padding-top: 2em;
+    padding-bottom: 2em;
+    border-top: 1px solid #dfe2e5;
+}
+
+.gitPlusMessageTextArea {
+    margin-top: 3px;
+    margin-bottom: 15px;
+    display: block;
+    min-width: 30em;
+    min-height: 3em;
+    font-size: 14px;
+}
+
+.jp-Dialog-body {
+    /* For newlines in error message to be visible */
+    white-space: pre-wrap;
+}
+
+.gitPlusCheckbox {
+    /* Fixes checkbox compatibility with JupyterLab 3.0 */
+    height: auto !important;
+    appearance: revert !important;
+}

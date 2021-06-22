@@ -44,7 +44,7 @@ function activate(
   notebookTracker: INotebookTracker
 ) {
   console.log(
-    'JupyterLab extension @reviewnb/gitplus (0.1.4) is activated!'
+    'JupyterLab extension @reviewnb/gitplus (0.1.5) is activated!'
   );
   const createPRCommand = 'create-pr';
   app.commands.addCommand(createPRCommand, {
