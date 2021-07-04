@@ -17,18 +17,20 @@ A JupyterLab plugin for version control of Jupyter notebooks. It can,
 
 ## Requirements
 
-* JupyterLab >= 2.0
+* JupyterLab 2.x & 3.x
+
+If you're on a Windows machine, please upgrade to JupyterLab 3.x as this extension might have some problems with JupyterLab 2.x on Windows.
 
 ## Install
-
+#### 1. Install Required Packages
 ```bash
 pip install --upgrade jupyterlab_gitplus
 jupyter labextension install @reviewnb/jupyterlab_gitplus
 jupyter serverextension enable --py jupyterlab_gitplus
 ```
 
-### Setup GitHub token
-Here's [GitHub's guide](https://help.github.com/en/github/authenticating-to-github/creating-a-personal-access-token-for-the-command-line) to generate personal access token. Briefly speaking,
+#### 2. Setup GitHub token
+Tokens are required to make API calls to GitHub to push commits and create pull requests.
 
 - Head over [developer settings on GitHub](https://github.com/settings/tokens). Click "Generate New Token".
 - Select Repo scope. Click "Generate Token". Copy the generated token.
