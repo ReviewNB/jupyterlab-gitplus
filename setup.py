@@ -4,6 +4,7 @@ except ImportError:
     from distutils.core import setup
 
 import re
+from pathlib import Path
 
 version = re.search(
     '^__version__\s*=\s*"(.*)"',
