@@ -53,24 +53,21 @@ setup_args = dict(
         'jupyterlab',
         'gitpython',
         'requests',
-        'urllib3'
+        'urllib3',
+        'jupyter_packaging'
     ]
 )
 
 
-try:
-    from jupyter_packaging import (
-        wrap_installers,
-        npm_builder,
-        get_data_files
-    )
-    post_develop = npm_builder(
-        build_cmd="install:extension", source_dir="src", build_dir=lab_path
-    )
-    setup_args['cmdclass'] = wrap_installers(post_develop=post_develop)
-    setup_args['data_files'] = get_data_files(data_files_spec)
-except ImportError as e:
-    pass
+from jupyter_packaging import (
+    wrap_installers,
+    npm_builder,
+    get_data_files
+)
+
+post_develop = npm_builder(build_cmd="install:extension", source_dir="src", build_dir=lab_path)
+setup_args['cmdclass'] = wrap_installers(post_develop=post_develop)
+setup_args['data_files'] = get_data_files(data_files_spec)
 
 if __name__ == "__main__":
     setup(**setup_args)
