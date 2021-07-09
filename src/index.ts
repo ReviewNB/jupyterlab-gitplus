@@ -324,9 +324,6 @@ function get_open_files(
 ) {
   const result: string[] = [];
   let separator = '/';
-  if (base_dir.includes('\\')) {
-    separator = '\\';
-  }
 
   notebookTracker.forEach(notebook => {
     result.push(base_dir + separator + notebook.context.path);
