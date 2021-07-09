@@ -171,6 +171,6 @@ class ServerConfigHandler(IPythonHandler):
             raise RuntimeError('Could not read server_root_dir from Jupyter!')
 
         result = {
-            'server_root_dir': os.path.expanduser(self.server_root_dir)
+            'server_root_dir': os.path.expanduser(self.server_root_dir).replace(os.sep, '/')
         }
         self.finish(json.dumps(result))
