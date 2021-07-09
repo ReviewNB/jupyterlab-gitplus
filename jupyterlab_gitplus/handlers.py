@@ -49,8 +49,8 @@ class ModifiedRepositoryListHandler(IPythonHandler):
                     logger.info('File is not under Git repository: ' + file['path'])
 
             for repo in repositories:
-                name = os.path.basename(path)
                 path = repo.working_dir.replace(os.sep, '/')
+                name = os.path.basename(path)
                 response.append({
                     "path": path,
                     "name": name
