@@ -33,7 +33,7 @@ jupyter serverextension enable --py jupyterlab_gitplus
 Tokens are required to make API calls to GitHub to push commits and create pull requests.
 
 - Head over [developer settings on GitHub](https://github.com/settings/tokens). Click "Generate New Token".
-- Select Repo scope. Click "Generate Token". Copy the generated token.
+- Select `repo` scope. Click "Generate Token". Copy the generated token.
 - Open you Jupyter config file `~/.jupyter/jupyter_notebook_config.py` & paste the token as below
 ```bash
 c.GitPlus.github_token = '<your-github-access-token>'
