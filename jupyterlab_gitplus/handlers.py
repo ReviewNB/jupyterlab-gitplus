@@ -8,7 +8,7 @@ from notebook.base.handlers import IPythonHandler
 from git import Repo
 from shutil import copyfile, rmtree
 from .github_v3 import create_pull_request, get_repository_details_for_pr
-from .utils import get_owner_login_and_repo_name
+from .utils import get_owner_login_and_repo_name, onerror
 
 
 import traceback
@@ -79,7 +79,7 @@ class PullRequestHandler(IPythonHandler):
             commit_msg = body['commit_message']
             pr_title = body['pr_title']
             temp_repo_path = "/tmp/temp_repo.git"
-            rmtree(temp_repo_path, ignore_errors=True)
+            rmtree(temp_repo_path, onerror=onerror)
             existing_files = [repo_path + '/' + file_path for file_path in file_paths]
             new_files = [temp_repo_path + '/' + file_path for file_path in file_paths]
 
