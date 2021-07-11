@@ -34,7 +34,10 @@ def onerror(func, path, exc_info):
 
     Copied from: https://stackoverflow.com/a/2656405/10674324
     """
-    if not os.access(path, os.W_OK):
+    if exc_info[0].__name__ == 'FileNotFoundError':
+        # folder does not exist, no need to delete
+        pass
+    elif not os.access(path, os.W_OK):
         # Is the error an access error ?
         os.chmod(path, stat.S_IWUSR)
         func(path)
