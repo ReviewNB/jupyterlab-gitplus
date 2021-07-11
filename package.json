@@ -51,7 +51,7 @@
     "@jupyterlab/notebook": "^3.0.11",
     "@lumino/application": "1.13.1",
     "@lumino/disposable": "^1.4.3",
-    "axios": "^0.19.2"
+    "axios": "^0.21.1"
   },
   "devDependencies": {
     "@jupyterlab/builder": "^3.0.0",
