@@ -49,7 +49,7 @@
     "@jupyterlab/fileeditor": "^3.0.11",
     "@jupyterlab/mainmenu": "^3.0.9",
     "@jupyterlab/notebook": "^3.0.11",
-    "@lumino/application": "1.13.1",
+    "@lumino/application": "^1.13.1",
     "@lumino/disposable": "^1.4.3",
     "axios": "^0.19.2"
   },
