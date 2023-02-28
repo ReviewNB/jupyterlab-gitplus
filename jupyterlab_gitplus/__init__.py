@@ -25,7 +25,7 @@ def _jupyter_server_extension_paths():
     }]
 
 
-__version__ = "0.3.2"
+__version__ = "0.3.3"
 
 
 def _load_jupyter_server_extension(nb_server_app):
