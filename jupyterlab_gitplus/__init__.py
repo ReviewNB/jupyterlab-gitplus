@@ -1,6 +1,9 @@
 
 import json
 from pathlib import Path
+from urllib.parse import urlparse
+import logging
+logger = logging.getLogger(__name__)
 
 from ._version import __version__
 
@@ -42,14 +45,30 @@ def _load_jupyter_server_extension(nb_server_app):
     host_pattern = '.*$'
 
     gh_token = nb_server_app.config.get('GitPlus', {}).get('github_token', '')
+    reviewnb_endpoint =  nb_server_app.config.get('GitPlus', {}).get(
+        'self_hosted_reviewnb_endpoint',
+        'https://app.reviewnb.com/'
+    )
+    try:
+        x = urlparse(reviewnb_endpoint)
+        if x.path not in ["", "/"]:
+            raise ValueError(f"reviewnb_endpoint URL must not have a path component. Probably you should change it to https://{x.netloc}/")
+        if not reviewnb_endpoint.endswith("/"):
+            reviewnb_endpoint += "/"
+        logger.info(f"Reviewnb_endpoing has been set to: {reviewnb_endpoint}")
+    except ValueError:
+        logger.error(f"Unable to parse GitPlus.reviewnb_endpoint, value was {reviewnb_endpoint}")
+        raise
+
     context = {}
     context['github_token'] = gh_token
     context['server_root_dir'] = server_root_dir
+    context['reviewnb_endpoint'] = reviewnb_endpoint
 
-    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/expanded_server_root'), ServerConfigHandler, context)])
-    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/modified_repo'), ModifiedRepositoryListHandler)])
-    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/pull_request'), PullRequestHandler, context)])
-    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/commit'), CommitHandler, context)])
+    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/expanded_server_root'), ServerConfigHandler, {"context": context})])
+    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/modified_repo'), ModifiedRepositoryListHandler, {"context": context})])
+    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/pull_request'), PullRequestHandler, {"context": context})])
+    web_app.add_handlers(host_pattern, [(url_path_join(base_url, 'gitplus/commit'), CommitHandler, {"context": context})])
     nb_server_app.log.info("Registered GitPlus extension at URL path /jupyterlab-gitplus")
 
 
