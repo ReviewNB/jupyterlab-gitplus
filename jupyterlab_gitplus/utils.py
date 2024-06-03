@@ -2,8 +2,11 @@
 import re
 import os
 import stat
+import logging
+_logger = logging.getLogger(__name__)
 
-GITHUB_REMOTE_URL_REGEX = re.compile(r"github\.com\/(.*?)\/(.*?)\.git")
+GITHUB_REMOTE_URL_REGEX = re.compile(r"github\.com[:\/](.*?)\/(.*?)\.git")
+
 
 def get_owner_login_and_repo_name(repo):
     owner_login, repo_name = '', ''
@@ -17,6 +20,9 @@ def get_owner_login_and_repo_name(repo):
     if match:
         owner_login = match.group(1)
         repo_name = match.group(2)
+        _logger.info(f"For git repo {remote_url}, found {owner_login}/{repo_name}")
+    else:
+        _logger.error(f"Unable to find owner/repo name for repo {remote_url}")
 
     return owner_login, repo_name
 
