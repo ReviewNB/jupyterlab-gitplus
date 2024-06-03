@@ -54,7 +54,7 @@ setup_args = dict(
         'gitpython',
         'requests',
         'urllib3',
-        'jupyter_server>=1.6,<2'
+        'jupyter_server>=1.6,<3'
     ]
 )
 
