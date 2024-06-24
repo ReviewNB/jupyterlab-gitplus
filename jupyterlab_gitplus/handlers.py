@@ -18,13 +18,15 @@ logger = logging.getLogger(__name__)
 
 GITHUB_ENDPOINT = 'https://github.com/'
 GITHUB_REMOTE_DOMAIN = 'github.com'
-REVIEWNB_ENDPOINT = 'https://app.reviewnb.com/'
 
 
 class ModifiedRepositoryListHandler(IPythonHandler):
     '''
     Given a list of recently opened files we return repositories to which these files belong to (if the file is under a git repository)
     '''
+    def initialize(self, context):
+        pass
+
     def post(self):
         body = {}
         try:
@@ -64,8 +66,9 @@ class ModifiedRepositoryListHandler(IPythonHandler):
 
 
 class PullRequestHandler(IPythonHandler):
-    def initialize(self, github_token, server_root_dir):
-        self.github_token = github_token
+    def initialize(self, context):
+        self.github_token = context["github_token"]
+        self.reviewnb_endpoint = context["reviewnb_endpoint"]
 
     def post(self):
         '''
@@ -102,12 +105,14 @@ class PullRequestHandler(IPythonHandler):
             owner_login, repo_name = get_owner_login_and_repo_name(new_repo)
             base_owner_login, base_repo_name, head, base = get_repository_details_for_pr(owner_login, repo_name, self.github_token, new_branch_name)
             result = create_pull_request(
-                    owner_login=base_owner_login,
-                    repo_name=base_repo_name,
-                    title=pr_title,
-                    head=head,
-                    base=base,
-                    access_token=self.github_token)
+                owner_login=base_owner_login,
+                repo_name=base_repo_name,
+                title=pr_title,
+                head=head,
+                base=base,
+                access_token=self.github_token,
+                reviewnb_endpoint=self.reviewnb_endpoint,
+            )
             self.finish(json.dumps(result))
         except Exception as ex:
             logger.error('/gitplus/pull_request request payload: ' + str(body))
@@ -116,8 +121,9 @@ class PullRequestHandler(IPythonHandler):
 
 
 class CommitHandler(IPythonHandler):
-    def initialize(self, github_token, server_root_dir):
-        self.github_token = github_token
+    def initialize(self, context):
+        self.github_token = context["github_token"]
+        self.reviewnb_endpoint = context["reviewnb_endpoint"]
 
     def post(self):
         '''
@@ -142,8 +148,7 @@ class CommitHandler(IPythonHandler):
             if old_commit != new_commit:
                 owner_login, repo_name = get_owner_login_and_repo_name(repo)
                 github_url = GITHUB_ENDPOINT + owner_login + '/' + repo_name + '/commit/' + new_commit
-                reviewnb_url = REVIEWNB_ENDPOINT + owner_login + '/' + repo_name + '/commit/' + new_commit
-
+                reviewnb_url = self.reviewnb_endpoint + owner_login + '/' + repo_name + '/commit/' + new_commit
 
                 result = {
                     "github_url": github_url,
@@ -158,8 +163,8 @@ class CommitHandler(IPythonHandler):
 
 
 class ServerConfigHandler(IPythonHandler):
-    def initialize(self, github_token, server_root_dir):
-        self.server_root_dir = server_root_dir
+    def initialize(self, context):
+        self.server_root_dir = context["server_root_dir"]
 
     def get(self):
         '''

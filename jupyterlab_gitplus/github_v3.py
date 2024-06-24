@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 GITHUB_REST_ENDPOINT = 'https://api.github.com/'
 
 
-def create_pull_request(owner_login, repo_name, title, head, base, access_token):
+def create_pull_request(owner_login, repo_name, title, head, base, access_token, reviewnb_endpoint):
     content = {}
     url = GITHUB_REST_ENDPOINT + 'repos/' + owner_login + '/' + repo_name + '/pulls'
     headers = {
@@ -28,7 +28,7 @@ def create_pull_request(owner_login, repo_name, title, head, base, access_token)
         response.raise_for_status()
         result = {
             'github_url': content['html_url'],
-            'reviewnb_url': content['html_url'].replace('github.com', 'app.reviewnb.com')
+            "reviewnb_url": content['html_url'].replace('https://github.com/', reviewnb_endpoint)
         }
         return result
     except Exception as ex:
