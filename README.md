@@ -133,6 +133,9 @@ The `jlpm` command is JupyterLab's pinned version of
 ```bash
 # Clone the repo to your local environment & install dependencies
 
+# via https://jupyterlab.readthedocs.io/en/stable/extension/extension_tutorial.html#build-and-install-the-extension-for-development
+pip install -ve .
+
 # Link your development version of the extension with JupyterLab
 jupyter labextension link .
 
