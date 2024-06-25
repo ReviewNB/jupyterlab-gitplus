@@ -42,10 +42,10 @@ c.GitPlus.github_token = '<your-github-access-token>'
 
 After installation, start JupyterLab normally & you should see "Git-Plus" as a new menu item at the top.
 
-#### 2.1 Configuring a custom reviewnb URL
+#### 3. [OPTIONAL] Only required for self-hosted ReviewNB customers 
 
-Suppose your company uses a custom reviewnb URL, e.g. `https://reviewnb.yourdomain.com`. You can configure
-gitplus to link users to PRs/commits at this URL instead of the default one as follows:
+If your organization has a self-hosted ReviewNB instance running at e.g. `https://reviewnb.yourdomain.com`. You can configure
+GitPlus to link users to PRs/commits at this URL instead of the default one as follows:
 
 ```python
 c.GitPlus.self_hosted_reviewnb_endpoint = "https://reviewnb.yourdomain.com/"

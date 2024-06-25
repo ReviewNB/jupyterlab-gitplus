@@ -28,14 +28,14 @@ def create_pull_request(owner_login, repo_name, title, head, base, access_token,
         response.raise_for_status()
         result = {
             'github_url': content['html_url'],
-            "reviewnb_url": content['html_url'].replace('https://github.com/', reviewnb_endpoint)
+            'reviewnb_url': content['html_url'].replace('https://github.com/', reviewnb_endpoint)
         }
         return result
     except Exception as ex:
         logger.error('Request payload: ' + str(data))
         logger.error('API Response: ' + str(content))
         logger.error(traceback.format_exc())
-        raise(ex)
+        raise ex
 
 
 def get_repository_details_for_pr(owner_login, repo_name, access_token, new_branch_name):

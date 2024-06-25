@@ -21,9 +21,9 @@ GITHUB_REMOTE_DOMAIN = 'github.com'
 
 
 class ModifiedRepositoryListHandler(IPythonHandler):
-    '''
+    """
     Given a list of recently opened files we return repositories to which these files belong to (if the file is under a git repository)
-    '''
+    """
     def initialize(self, context):
         pass
 
@@ -71,9 +71,9 @@ class PullRequestHandler(IPythonHandler):
         self.reviewnb_endpoint = context["reviewnb_endpoint"]
 
     def post(self):
-        '''
+        """
         Create a pull request
-        '''
+        """
         body = {}
         try:
             body = json.loads(self.request.body)
@@ -117,7 +117,7 @@ class PullRequestHandler(IPythonHandler):
         except Exception as ex:
             logger.error('/gitplus/pull_request request payload: ' + str(body))
             logger.error(traceback.format_exc())
-            raise(ex)
+            raise ex
 
 
 class CommitHandler(IPythonHandler):
@@ -126,9 +126,9 @@ class CommitHandler(IPythonHandler):
         self.reviewnb_endpoint = context["reviewnb_endpoint"]
 
     def post(self):
-        '''
+        """
         Push commit
-        '''
+        """
         body = {}
         try:
             body = json.loads(self.request.body)
@@ -167,11 +167,11 @@ class ServerConfigHandler(IPythonHandler):
         self.server_root_dir = context["server_root_dir"]
 
     def get(self):
-        '''
+        """
         Returns following config,
             1. server_root_dir: Expanded root directory of server
                 This can be read directly on client side with "PageConfig.getOption('serverRoot')" but that includes tilde (~). With this API we return tilde expanded absolute server root dir.
-        '''
+        """
         if not self.server_root_dir:
             raise RuntimeError('Could not read server_root_dir from Jupyter!')
 
